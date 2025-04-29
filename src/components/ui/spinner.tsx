@@ -1,4 +1,4 @@
-import { tv, VariantProps } from 'tailwind-variants';
+import { tv, VariantProps } from 'tailwind-variants'
 
 const spinner = tv({
   slots: {
@@ -24,17 +24,17 @@ const spinner = tv({
   defaultVariants: {
     size: 'small',
   },
-});
+})
 
 export function Spinner({
   size,
   className,
 }: VariantProps<typeof spinner> & { className?: string }) {
-  const { container, status } = spinner({ size, className });
+  const { container, status } = spinner({ size, className })
 
   return (
     <div className={container()}>
       <div className={status()} role="status" />
     </div>
-  );
+  )
 }
