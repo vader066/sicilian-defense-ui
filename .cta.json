@@ -1,0 +1,16 @@
+{
+  "framework": "react",
+  "typescript": true,
+  "projectName": "sicilian-defense-ui",
+  "mode": "file-router",
+  "tailwind": true,
+  "packageManager": "yarn",
+  "toolchain": "eslint+prettier",
+  "variableValues": {},
+  "git": true,
+  "version": 1,
+  "existingAddOns": [
+    "shadcn",
+    "tanstack-query"
+  ]
+}
