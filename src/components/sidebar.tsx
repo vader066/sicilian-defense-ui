@@ -1,9 +1,9 @@
-import React from 'react'
 import { BsClockHistory } from 'react-icons/bs'
+import { Link as RouterLink, type LinkProps } from '@tanstack/react-router'
 
 import { FaChessKnight } from 'react-icons/fa'
-import { GiTrophy, GiTrophyCup } from 'react-icons/gi'
-import { HiHome, HiTrophy } from 'react-icons/hi2'
+import { GiTrophy } from 'react-icons/gi'
+import { HiHome } from 'react-icons/hi2'
 import { LuSettings } from 'react-icons/lu'
 import { PiRanking, PiSignOutFill } from 'react-icons/pi'
 import { RiSunFill } from 'react-icons/ri'
@@ -15,26 +15,26 @@ function SideBar() {
         <FaChessKnight size={40} color="white" />
       </div>
       <ul className="flex flex-col gap-3 h-full [&>li:last-child]:mt-auto">
-        <Link link="/dashboard/home">
+        <Link to="/app/dashboard/home">
           <HiHome size={30} color="white" />
         </Link>
-        <Link link="/dashboard/leaderboard">
+        <Link to="/app/dashboard/leaderboard">
           <PiRanking size={30} color="white" />
         </Link>
-        <Link link="/dashboard/history">
+        <Link to="/app/dashboard/history">
           <BsClockHistory size={30} color="white" />
         </Link>
-        <Link link="#">
+        <Link to="/">
           <GiTrophy size={30} color="white" />
           {/* <HiTrophy size={30} color="white" /> */}
         </Link>
-        <Link link="/dashboard/settings">
+        <Link to="/app/dashboard/settings">
           <LuSettings size={30} color="white" />
         </Link>
-        <Link link="#">
+        <Link to="/">
           <RiSunFill size={30} color="white" />
         </Link>
-        <Link link="/">
+        <Link to="/">
           <PiSignOutFill size={30} color="white" />
         </Link>
       </ul>
@@ -42,16 +42,10 @@ function SideBar() {
   )
 }
 
-function Link({
-  children,
-  link,
-}: {
-  children?: React.ReactNode
-  link: string
-}) {
+function Link({ children, ...props }: LinkProps) {
   return (
     <li className="flex items-center justify-center rounded-md hover:bg-white/15 py-3">
-      <a href={link}>{children}</a>
+      <RouterLink {...props}>{children}</RouterLink>
     </li>
   )
 }

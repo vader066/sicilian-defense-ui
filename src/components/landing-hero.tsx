@@ -18,7 +18,7 @@ function Hero() {
           </p>
           <div className="flex flex-col md:flex-row gap-6">
             <a
-              href="/sign-in"
+              href="/app/auth/sign-in"
               className="rounded-md bg-black text-white p-1 px-2 border-2 border-green-400"
             >
               Sign In

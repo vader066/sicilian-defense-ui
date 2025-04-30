@@ -8,11 +8,29 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
+import { createFileRoute } from '@tanstack/react-router'
+
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as IndexImport } from './routes/index'
 import { Route as AppIndexImport } from './routes/app/index'
+import { Route as AppDashboardLayoutImport } from './routes/app/dashboard/_layout'
+import { Route as AppAuthLayoutImport } from './routes/app/auth/_layout'
+import { Route as AppAuthLayoutSignUpImport } from './routes/app/auth/_layout/sign-up'
+import { Route as AppAuthLayoutSignInImport } from './routes/app/auth/_layout/sign-in'
+import { Route as AppDashboardLayoutSettingsIndexImport } from './routes/app/dashboard/_layout/settings/index'
+import { Route as AppDashboardLayoutLeaderboardIndexImport } from './routes/app/dashboard/_layout/leaderboard/index'
+import { Route as AppDashboardLayoutHomeIndexImport } from './routes/app/dashboard/_layout/home/index'
+import { Route as AppDashboardLayoutHistoryIndexImport } from './routes/app/dashboard/_layout/history/index'
+import { Route as AppDashboardLayoutHomeManageUsersIndexImport } from './routes/app/dashboard/_layout/home/manage-users/index'
+import { Route as AppDashboardLayoutHomeAddOnlineTournIndexImport } from './routes/app/dashboard/_layout/home/add-online-tourn/index'
+import { Route as AppDashboardLayoutHomeAddOfflineTournIndexImport } from './routes/app/dashboard/_layout/home/add-offline-tourn/index'
+
+// Create Virtual Routes
+
+const AppDashboardImport = createFileRoute('/app/dashboard')()
+const AppAuthImport = createFileRoute('/app/auth')()
 
 // Create/Update Routes
 
@@ -22,11 +40,94 @@ const IndexRoute = IndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const AppDashboardRoute = AppDashboardImport.update({
+  id: '/app/dashboard',
+  path: '/app/dashboard',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AppAuthRoute = AppAuthImport.update({
+  id: '/app/auth',
+  path: '/app/auth',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const AppIndexRoute = AppIndexImport.update({
   id: '/app/',
   path: '/app/',
   getParentRoute: () => rootRoute,
 } as any)
+
+const AppDashboardLayoutRoute = AppDashboardLayoutImport.update({
+  id: '/_layout',
+  getParentRoute: () => AppDashboardRoute,
+} as any)
+
+const AppAuthLayoutRoute = AppAuthLayoutImport.update({
+  id: '/_layout',
+  getParentRoute: () => AppAuthRoute,
+} as any)
+
+const AppAuthLayoutSignUpRoute = AppAuthLayoutSignUpImport.update({
+  id: '/sign-up',
+  path: '/sign-up',
+  getParentRoute: () => AppAuthLayoutRoute,
+} as any)
+
+const AppAuthLayoutSignInRoute = AppAuthLayoutSignInImport.update({
+  id: '/sign-in',
+  path: '/sign-in',
+  getParentRoute: () => AppAuthLayoutRoute,
+} as any)
+
+const AppDashboardLayoutSettingsIndexRoute =
+  AppDashboardLayoutSettingsIndexImport.update({
+    id: '/settings/',
+    path: '/settings/',
+    getParentRoute: () => AppDashboardLayoutRoute,
+  } as any)
+
+const AppDashboardLayoutLeaderboardIndexRoute =
+  AppDashboardLayoutLeaderboardIndexImport.update({
+    id: '/leaderboard/',
+    path: '/leaderboard/',
+    getParentRoute: () => AppDashboardLayoutRoute,
+  } as any)
+
+const AppDashboardLayoutHomeIndexRoute =
+  AppDashboardLayoutHomeIndexImport.update({
+    id: '/home/',
+    path: '/home/',
+    getParentRoute: () => AppDashboardLayoutRoute,
+  } as any)
+
+const AppDashboardLayoutHistoryIndexRoute =
+  AppDashboardLayoutHistoryIndexImport.update({
+    id: '/history/',
+    path: '/history/',
+    getParentRoute: () => AppDashboardLayoutRoute,
+  } as any)
+
+const AppDashboardLayoutHomeManageUsersIndexRoute =
+  AppDashboardLayoutHomeManageUsersIndexImport.update({
+    id: '/home/manage-users/',
+    path: '/home/manage-users/',
+    getParentRoute: () => AppDashboardLayoutRoute,
+  } as any)
+
+const AppDashboardLayoutHomeAddOnlineTournIndexRoute =
+  AppDashboardLayoutHomeAddOnlineTournIndexImport.update({
+    id: '/home/add-online-tourn/',
+    path: '/home/add-online-tourn/',
+    getParentRoute: () => AppDashboardLayoutRoute,
+  } as any)
+
+const AppDashboardLayoutHomeAddOfflineTournIndexRoute =
+  AppDashboardLayoutHomeAddOfflineTournIndexImport.update({
+    id: '/home/add-offline-tourn/',
+    path: '/home/add-offline-tourn/',
+    getParentRoute: () => AppDashboardLayoutRoute,
+  } as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -46,44 +147,280 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIndexImport
       parentRoute: typeof rootRoute
     }
+    '/app/auth': {
+      id: '/app/auth'
+      path: '/app/auth'
+      fullPath: '/app/auth'
+      preLoaderRoute: typeof AppAuthImport
+      parentRoute: typeof rootRoute
+    }
+    '/app/auth/_layout': {
+      id: '/app/auth/_layout'
+      path: '/app/auth'
+      fullPath: '/app/auth'
+      preLoaderRoute: typeof AppAuthLayoutImport
+      parentRoute: typeof AppAuthRoute
+    }
+    '/app/dashboard': {
+      id: '/app/dashboard'
+      path: '/app/dashboard'
+      fullPath: '/app/dashboard'
+      preLoaderRoute: typeof AppDashboardImport
+      parentRoute: typeof rootRoute
+    }
+    '/app/dashboard/_layout': {
+      id: '/app/dashboard/_layout'
+      path: '/app/dashboard'
+      fullPath: '/app/dashboard'
+      preLoaderRoute: typeof AppDashboardLayoutImport
+      parentRoute: typeof AppDashboardRoute
+    }
+    '/app/auth/_layout/sign-in': {
+      id: '/app/auth/_layout/sign-in'
+      path: '/sign-in'
+      fullPath: '/app/auth/sign-in'
+      preLoaderRoute: typeof AppAuthLayoutSignInImport
+      parentRoute: typeof AppAuthLayoutImport
+    }
+    '/app/auth/_layout/sign-up': {
+      id: '/app/auth/_layout/sign-up'
+      path: '/sign-up'
+      fullPath: '/app/auth/sign-up'
+      preLoaderRoute: typeof AppAuthLayoutSignUpImport
+      parentRoute: typeof AppAuthLayoutImport
+    }
+    '/app/dashboard/_layout/history/': {
+      id: '/app/dashboard/_layout/history/'
+      path: '/history'
+      fullPath: '/app/dashboard/history'
+      preLoaderRoute: typeof AppDashboardLayoutHistoryIndexImport
+      parentRoute: typeof AppDashboardLayoutImport
+    }
+    '/app/dashboard/_layout/home/': {
+      id: '/app/dashboard/_layout/home/'
+      path: '/home'
+      fullPath: '/app/dashboard/home'
+      preLoaderRoute: typeof AppDashboardLayoutHomeIndexImport
+      parentRoute: typeof AppDashboardLayoutImport
+    }
+    '/app/dashboard/_layout/leaderboard/': {
+      id: '/app/dashboard/_layout/leaderboard/'
+      path: '/leaderboard'
+      fullPath: '/app/dashboard/leaderboard'
+      preLoaderRoute: typeof AppDashboardLayoutLeaderboardIndexImport
+      parentRoute: typeof AppDashboardLayoutImport
+    }
+    '/app/dashboard/_layout/settings/': {
+      id: '/app/dashboard/_layout/settings/'
+      path: '/settings'
+      fullPath: '/app/dashboard/settings'
+      preLoaderRoute: typeof AppDashboardLayoutSettingsIndexImport
+      parentRoute: typeof AppDashboardLayoutImport
+    }
+    '/app/dashboard/_layout/home/add-offline-tourn/': {
+      id: '/app/dashboard/_layout/home/add-offline-tourn/'
+      path: '/home/add-offline-tourn'
+      fullPath: '/app/dashboard/home/add-offline-tourn'
+      preLoaderRoute: typeof AppDashboardLayoutHomeAddOfflineTournIndexImport
+      parentRoute: typeof AppDashboardLayoutImport
+    }
+    '/app/dashboard/_layout/home/add-online-tourn/': {
+      id: '/app/dashboard/_layout/home/add-online-tourn/'
+      path: '/home/add-online-tourn'
+      fullPath: '/app/dashboard/home/add-online-tourn'
+      preLoaderRoute: typeof AppDashboardLayoutHomeAddOnlineTournIndexImport
+      parentRoute: typeof AppDashboardLayoutImport
+    }
+    '/app/dashboard/_layout/home/manage-users/': {
+      id: '/app/dashboard/_layout/home/manage-users/'
+      path: '/home/manage-users'
+      fullPath: '/app/dashboard/home/manage-users'
+      preLoaderRoute: typeof AppDashboardLayoutHomeManageUsersIndexImport
+      parentRoute: typeof AppDashboardLayoutImport
+    }
   }
 }
 
 // Create and export the route tree
 
+interface AppAuthLayoutRouteChildren {
+  AppAuthLayoutSignInRoute: typeof AppAuthLayoutSignInRoute
+  AppAuthLayoutSignUpRoute: typeof AppAuthLayoutSignUpRoute
+}
+
+const AppAuthLayoutRouteChildren: AppAuthLayoutRouteChildren = {
+  AppAuthLayoutSignInRoute: AppAuthLayoutSignInRoute,
+  AppAuthLayoutSignUpRoute: AppAuthLayoutSignUpRoute,
+}
+
+const AppAuthLayoutRouteWithChildren = AppAuthLayoutRoute._addFileChildren(
+  AppAuthLayoutRouteChildren,
+)
+
+interface AppAuthRouteChildren {
+  AppAuthLayoutRoute: typeof AppAuthLayoutRouteWithChildren
+}
+
+const AppAuthRouteChildren: AppAuthRouteChildren = {
+  AppAuthLayoutRoute: AppAuthLayoutRouteWithChildren,
+}
+
+const AppAuthRouteWithChildren =
+  AppAuthRoute._addFileChildren(AppAuthRouteChildren)
+
+interface AppDashboardLayoutRouteChildren {
+  AppDashboardLayoutHistoryIndexRoute: typeof AppDashboardLayoutHistoryIndexRoute
+  AppDashboardLayoutHomeIndexRoute: typeof AppDashboardLayoutHomeIndexRoute
+  AppDashboardLayoutLeaderboardIndexRoute: typeof AppDashboardLayoutLeaderboardIndexRoute
+  AppDashboardLayoutSettingsIndexRoute: typeof AppDashboardLayoutSettingsIndexRoute
+  AppDashboardLayoutHomeAddOfflineTournIndexRoute: typeof AppDashboardLayoutHomeAddOfflineTournIndexRoute
+  AppDashboardLayoutHomeAddOnlineTournIndexRoute: typeof AppDashboardLayoutHomeAddOnlineTournIndexRoute
+  AppDashboardLayoutHomeManageUsersIndexRoute: typeof AppDashboardLayoutHomeManageUsersIndexRoute
+}
+
+const AppDashboardLayoutRouteChildren: AppDashboardLayoutRouteChildren = {
+  AppDashboardLayoutHistoryIndexRoute: AppDashboardLayoutHistoryIndexRoute,
+  AppDashboardLayoutHomeIndexRoute: AppDashboardLayoutHomeIndexRoute,
+  AppDashboardLayoutLeaderboardIndexRoute:
+    AppDashboardLayoutLeaderboardIndexRoute,
+  AppDashboardLayoutSettingsIndexRoute: AppDashboardLayoutSettingsIndexRoute,
+  AppDashboardLayoutHomeAddOfflineTournIndexRoute:
+    AppDashboardLayoutHomeAddOfflineTournIndexRoute,
+  AppDashboardLayoutHomeAddOnlineTournIndexRoute:
+    AppDashboardLayoutHomeAddOnlineTournIndexRoute,
+  AppDashboardLayoutHomeManageUsersIndexRoute:
+    AppDashboardLayoutHomeManageUsersIndexRoute,
+}
+
+const AppDashboardLayoutRouteWithChildren =
+  AppDashboardLayoutRoute._addFileChildren(AppDashboardLayoutRouteChildren)
+
+interface AppDashboardRouteChildren {
+  AppDashboardLayoutRoute: typeof AppDashboardLayoutRouteWithChildren
+}
+
+const AppDashboardRouteChildren: AppDashboardRouteChildren = {
+  AppDashboardLayoutRoute: AppDashboardLayoutRouteWithChildren,
+}
+
+const AppDashboardRouteWithChildren = AppDashboardRoute._addFileChildren(
+  AppDashboardRouteChildren,
+)
+
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppIndexRoute
+  '/app/auth': typeof AppAuthLayoutRouteWithChildren
+  '/app/dashboard': typeof AppDashboardLayoutRouteWithChildren
+  '/app/auth/sign-in': typeof AppAuthLayoutSignInRoute
+  '/app/auth/sign-up': typeof AppAuthLayoutSignUpRoute
+  '/app/dashboard/history': typeof AppDashboardLayoutHistoryIndexRoute
+  '/app/dashboard/home': typeof AppDashboardLayoutHomeIndexRoute
+  '/app/dashboard/leaderboard': typeof AppDashboardLayoutLeaderboardIndexRoute
+  '/app/dashboard/settings': typeof AppDashboardLayoutSettingsIndexRoute
+  '/app/dashboard/home/add-offline-tourn': typeof AppDashboardLayoutHomeAddOfflineTournIndexRoute
+  '/app/dashboard/home/add-online-tourn': typeof AppDashboardLayoutHomeAddOnlineTournIndexRoute
+  '/app/dashboard/home/manage-users': typeof AppDashboardLayoutHomeManageUsersIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/app': typeof AppIndexRoute
+  '/app/auth': typeof AppAuthLayoutRouteWithChildren
+  '/app/dashboard': typeof AppDashboardLayoutRouteWithChildren
+  '/app/auth/sign-in': typeof AppAuthLayoutSignInRoute
+  '/app/auth/sign-up': typeof AppAuthLayoutSignUpRoute
+  '/app/dashboard/history': typeof AppDashboardLayoutHistoryIndexRoute
+  '/app/dashboard/home': typeof AppDashboardLayoutHomeIndexRoute
+  '/app/dashboard/leaderboard': typeof AppDashboardLayoutLeaderboardIndexRoute
+  '/app/dashboard/settings': typeof AppDashboardLayoutSettingsIndexRoute
+  '/app/dashboard/home/add-offline-tourn': typeof AppDashboardLayoutHomeAddOfflineTournIndexRoute
+  '/app/dashboard/home/add-online-tourn': typeof AppDashboardLayoutHomeAddOnlineTournIndexRoute
+  '/app/dashboard/home/manage-users': typeof AppDashboardLayoutHomeManageUsersIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/app/': typeof AppIndexRoute
+  '/app/auth': typeof AppAuthRouteWithChildren
+  '/app/auth/_layout': typeof AppAuthLayoutRouteWithChildren
+  '/app/dashboard': typeof AppDashboardRouteWithChildren
+  '/app/dashboard/_layout': typeof AppDashboardLayoutRouteWithChildren
+  '/app/auth/_layout/sign-in': typeof AppAuthLayoutSignInRoute
+  '/app/auth/_layout/sign-up': typeof AppAuthLayoutSignUpRoute
+  '/app/dashboard/_layout/history/': typeof AppDashboardLayoutHistoryIndexRoute
+  '/app/dashboard/_layout/home/': typeof AppDashboardLayoutHomeIndexRoute
+  '/app/dashboard/_layout/leaderboard/': typeof AppDashboardLayoutLeaderboardIndexRoute
+  '/app/dashboard/_layout/settings/': typeof AppDashboardLayoutSettingsIndexRoute
+  '/app/dashboard/_layout/home/add-offline-tourn/': typeof AppDashboardLayoutHomeAddOfflineTournIndexRoute
+  '/app/dashboard/_layout/home/add-online-tourn/': typeof AppDashboardLayoutHomeAddOnlineTournIndexRoute
+  '/app/dashboard/_layout/home/manage-users/': typeof AppDashboardLayoutHomeManageUsersIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/app'
+  fullPaths:
+    | '/'
+    | '/app'
+    | '/app/auth'
+    | '/app/dashboard'
+    | '/app/auth/sign-in'
+    | '/app/auth/sign-up'
+    | '/app/dashboard/history'
+    | '/app/dashboard/home'
+    | '/app/dashboard/leaderboard'
+    | '/app/dashboard/settings'
+    | '/app/dashboard/home/add-offline-tourn'
+    | '/app/dashboard/home/add-online-tourn'
+    | '/app/dashboard/home/manage-users'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/app'
-  id: '__root__' | '/' | '/app/'
+  to:
+    | '/'
+    | '/app'
+    | '/app/auth'
+    | '/app/dashboard'
+    | '/app/auth/sign-in'
+    | '/app/auth/sign-up'
+    | '/app/dashboard/history'
+    | '/app/dashboard/home'
+    | '/app/dashboard/leaderboard'
+    | '/app/dashboard/settings'
+    | '/app/dashboard/home/add-offline-tourn'
+    | '/app/dashboard/home/add-online-tourn'
+    | '/app/dashboard/home/manage-users'
+  id:
+    | '__root__'
+    | '/'
+    | '/app/'
+    | '/app/auth'
+    | '/app/auth/_layout'
+    | '/app/dashboard'
+    | '/app/dashboard/_layout'
+    | '/app/auth/_layout/sign-in'
+    | '/app/auth/_layout/sign-up'
+    | '/app/dashboard/_layout/history/'
+    | '/app/dashboard/_layout/home/'
+    | '/app/dashboard/_layout/leaderboard/'
+    | '/app/dashboard/_layout/settings/'
+    | '/app/dashboard/_layout/home/add-offline-tourn/'
+    | '/app/dashboard/_layout/home/add-online-tourn/'
+    | '/app/dashboard/_layout/home/manage-users/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppIndexRoute: typeof AppIndexRoute
+  AppAuthRoute: typeof AppAuthRouteWithChildren
+  AppDashboardRoute: typeof AppDashboardRouteWithChildren
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppIndexRoute: AppIndexRoute,
+  AppAuthRoute: AppAuthRouteWithChildren,
+  AppDashboardRoute: AppDashboardRouteWithChildren,
 }
 
 export const routeTree = rootRoute
@@ -97,7 +434,9 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/app/"
+        "/app/",
+        "/app/auth",
+        "/app/dashboard"
       ]
     },
     "/": {
@@ -105,6 +444,75 @@ export const routeTree = rootRoute
     },
     "/app/": {
       "filePath": "app/index.tsx"
+    },
+    "/app/auth": {
+      "filePath": "app/auth",
+      "children": [
+        "/app/auth/_layout"
+      ]
+    },
+    "/app/auth/_layout": {
+      "filePath": "app/auth/_layout.tsx",
+      "parent": "/app/auth",
+      "children": [
+        "/app/auth/_layout/sign-in",
+        "/app/auth/_layout/sign-up"
+      ]
+    },
+    "/app/dashboard": {
+      "filePath": "app/dashboard",
+      "children": [
+        "/app/dashboard/_layout"
+      ]
+    },
+    "/app/dashboard/_layout": {
+      "filePath": "app/dashboard/_layout.tsx",
+      "parent": "/app/dashboard",
+      "children": [
+        "/app/dashboard/_layout/history/",
+        "/app/dashboard/_layout/home/",
+        "/app/dashboard/_layout/leaderboard/",
+        "/app/dashboard/_layout/settings/",
+        "/app/dashboard/_layout/home/add-offline-tourn/",
+        "/app/dashboard/_layout/home/add-online-tourn/",
+        "/app/dashboard/_layout/home/manage-users/"
+      ]
+    },
+    "/app/auth/_layout/sign-in": {
+      "filePath": "app/auth/_layout/sign-in.tsx",
+      "parent": "/app/auth/_layout"
+    },
+    "/app/auth/_layout/sign-up": {
+      "filePath": "app/auth/_layout/sign-up.tsx",
+      "parent": "/app/auth/_layout"
+    },
+    "/app/dashboard/_layout/history/": {
+      "filePath": "app/dashboard/_layout/history/index.tsx",
+      "parent": "/app/dashboard/_layout"
+    },
+    "/app/dashboard/_layout/home/": {
+      "filePath": "app/dashboard/_layout/home/index.tsx",
+      "parent": "/app/dashboard/_layout"
+    },
+    "/app/dashboard/_layout/leaderboard/": {
+      "filePath": "app/dashboard/_layout/leaderboard/index.tsx",
+      "parent": "/app/dashboard/_layout"
+    },
+    "/app/dashboard/_layout/settings/": {
+      "filePath": "app/dashboard/_layout/settings/index.tsx",
+      "parent": "/app/dashboard/_layout"
+    },
+    "/app/dashboard/_layout/home/add-offline-tourn/": {
+      "filePath": "app/dashboard/_layout/home/add-offline-tourn/index.tsx",
+      "parent": "/app/dashboard/_layout"
+    },
+    "/app/dashboard/_layout/home/add-online-tourn/": {
+      "filePath": "app/dashboard/_layout/home/add-online-tourn/index.tsx",
+      "parent": "/app/dashboard/_layout"
+    },
+    "/app/dashboard/_layout/home/manage-users/": {
+      "filePath": "app/dashboard/_layout/home/manage-users/index.tsx",
+      "parent": "/app/dashboard/_layout"
     }
   }
 }

@@ -1,0 +1,41 @@
+import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
+import SideBar from '@/components/sidebar'
+import { PlayerDataProvider } from '@/contexts/players-context'
+import { useAuth } from '@/hooks/auth'
+import { Spinner } from '@/components/ui/spinner'
+
+export const Route = createFileRoute('/app/dashboard/_layout')({
+  component: DashboardLayout,
+})
+
+function DashboardLayout() {
+  const { user, loading } = useAuth()
+  if (loading) {
+    return (
+      <html lang="en">
+        <body className={`antialiased`}>
+          <div className="h-dvh w-screen flex items-center justify-center">
+            <Spinner />
+          </div>
+        </body>
+      </html>
+    )
+  }
+
+  if (!user) {
+    redirect({ to: '/app/auth/sign-in' })
+  }
+
+  return (
+    <html lang="en">
+      <body className={'antialiased'}>
+        <SideBar />
+        <PlayerDataProvider>
+          <main className="ml-20 p-3 pt-10">
+            <Outlet />
+          </main>
+        </PlayerDataProvider>
+      </body>
+    </html>
+  )
+}

@@ -1,3 +1,4 @@
+import { Spinner } from '@/components/ui/spinner'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/app/')({
@@ -5,5 +6,9 @@ export const Route = createFileRoute('/app/')({
 })
 
 function RouteComponent() {
-  return <div>Hello "/app/"!</div>
+  return (
+    <div className="w-full h-dvh flex items-center justify-center">
+      <Spinner size="large" />
+    </div>
+  )
 }
