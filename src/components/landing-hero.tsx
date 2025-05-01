@@ -1,4 +1,3 @@
-import queen from '../../public/images/transparent-queen.png'
 import { RiArrowDropRightLine } from 'react-icons/ri'
 
 function Hero() {
@@ -33,7 +32,11 @@ function Hero() {
         </div>
       </div>
       <div className="relative md:flex flex-2 hidden items-center">
-        <img src={queen} alt="chess queen" className="object-contain" />
+        <img
+          src="/images/transparent-queen.png"
+          alt="chess queen"
+          className="object-contain"
+        />
       </div>
     </div>
   )

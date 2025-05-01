@@ -1,3 +1,4 @@
+import { toast } from '@/components/toast'
 import {
   Select,
   SelectContent,
@@ -7,34 +8,11 @@ import {
 } from '@/components/ui/select'
 import { Spinner } from '@/components/ui/spinner'
 import { cn } from '@/lib/utils'
+import type { Member, sex } from '@/types/database/models'
 import { type FormEvent, useState } from 'react'
 import { FaChessKing, FaChessQueen } from 'react-icons/fa'
 
-type sex = 'male' | 'female' | undefined
-
-export type ToastState =
-  | 'added'
-  | 'deleted'
-  | 'updated'
-  | 'unknown'
-  | 'error'
-  | undefined
-
-export type Member = {
-  first_name: string
-  last_name: string
-  programme: string
-  username: string
-  dob: Date
-  sex: sex
-  rating: number
-}
-
-export function AddMember({
-  sendToastState,
-}: {
-  sendToastState: (state: ToastState) => void
-}) {
+export function AddMember() {
   const [isLoading, setIsLoading] = useState(false)
   const [edit, setEdit] = useState(false)
   const [form, setForm] = useState<Member>({
@@ -51,7 +29,7 @@ export function AddMember({
     e.preventDefault()
     setIsLoading(true)
     try {
-      const response = await fetch('/api/db/add-player', {
+      const response = await fetch('http://localhost:5001/api/players', {
         method: 'POST',
         headers: {
           'content-type': 'application/json',
@@ -61,12 +39,20 @@ export function AddMember({
       if (!response.ok) {
         const error = await response.json()
         console.log(error.type)
+        toast({
+          title: 'Error Occurred',
+          description: error.message,
+          variant: 'error',
+        })
         throw Error(error.message)
       }
-      sendToastState('added')
+      toast({
+        title: 'Created Successfully',
+        description: 'The player was successfully added to the database',
+        variant: 'success',
+      })
     } catch (error: any) {
       console.log(error.message)
-      sendToastState('error')
     } finally {
       setIsLoading(false)
     }
@@ -192,7 +178,7 @@ export function AddMember({
                   setForm({ ...form, rating: 1400 })
                 }
               }}
-            />{' '}
+            />
             <label htmlFor="edit" className="text-nowrap">
               Edit anyway
             </label>

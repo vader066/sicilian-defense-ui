@@ -24,6 +24,18 @@ export interface TOURNAMENT {
   clubs?: string
 }
 
+export type sex = 'male' | 'female' | undefined
+
+export type Member = {
+  first_name: string
+  last_name: string
+  programme: string
+  username: string
+  dob: Date
+  sex: sex
+  rating: number
+}
+
 export interface PLAYER {
   id: string
   name: string

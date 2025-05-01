@@ -6,14 +6,9 @@ import { usePlayerData } from '@/contexts/players-context'
 import { useState } from 'react'
 import { BiErrorAlt } from 'react-icons/bi'
 import { BsTrash3Fill } from 'react-icons/bs'
-import { type ToastState } from './add-member'
 import { Spinner } from '@/components/ui/spinner'
 
-export function ExistingMember({
-  sendToastState,
-}: {
-  sendToastState: (state: ToastState) => void
-}) {
+export function ExistingMember() {
   const [isDeleting, setIsDeleting] = useState(false)
   const deletePlayer = async (id: string) => {
     try {
@@ -25,11 +20,9 @@ export function ExistingMember({
       if (!response.ok) {
         throw new Error('Error deleting player', data)
       }
-      sendToastState('deleted')
       console.log('Player deleted successfully', data)
     } catch (error: any) {
       console.log(error.message)
-      sendToastState('error')
     } finally {
       setIsDeleting(false)
     }

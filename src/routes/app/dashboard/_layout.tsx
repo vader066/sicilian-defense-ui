@@ -12,13 +12,9 @@ function DashboardLayout() {
   const { user, loading } = useAuth()
   if (loading) {
     return (
-      <html lang="en">
-        <body className={`antialiased`}>
-          <div className="h-dvh w-screen flex items-center justify-center">
-            <Spinner />
-          </div>
-        </body>
-      </html>
+      <div className="h-dvh w-screen flex items-center justify-center">
+        <Spinner />
+      </div>
     )
   }
 
@@ -27,15 +23,13 @@ function DashboardLayout() {
   }
 
   return (
-    <html lang="en">
-      <body className={'antialiased'}>
-        <SideBar />
-        <PlayerDataProvider>
-          <main className="ml-20 p-3 pt-10">
-            <Outlet />
-          </main>
-        </PlayerDataProvider>
-      </body>
-    </html>
+    <div>
+      <SideBar />
+      <PlayerDataProvider>
+        <main className="ml-20 p-3 pt-10">
+          <Outlet />
+        </main>
+      </PlayerDataProvider>
+    </div>
   )
 }
