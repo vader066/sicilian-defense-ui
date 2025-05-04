@@ -1,7 +1,11 @@
 'use client'
 
 import DataTable from '@/components/data-table'
-import { APPWRITE_TOURNAMENT, GAMES, TTableData } from '@/types/database/models'
+import {
+  type APPWRITE_TOURNAMENT,
+  type GAMES,
+  type TTableData,
+} from '@/types/database/models'
 import { Toolbar } from '@/components/data-table/tournament-toolbar'
 
 // This function is for constructing the tournament table object to be displayed on the history page

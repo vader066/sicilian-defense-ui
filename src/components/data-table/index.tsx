@@ -137,9 +137,9 @@ export default function DataTable<TData, TValue>({
                       key={row.id}
                       data-state={row.getIsSelected() && 'selected'}
                     >
-                      {row.getVisibleCells().map((cell) => (
+                      {row.getVisibleCells().map((cell, index) => (
                         <TableCell
-                          key={cell.id}
+                          key={`${cell.id}_${index}`}
                           onClick={() => {
                             const clickedCell = cell.column.columnDef
                             const cellHasAccessorKey =

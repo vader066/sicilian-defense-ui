@@ -9,7 +9,7 @@ import Warning from './icons/warning'
 const ToastVariants = cva('', {
   variants: {
     variant: {
-      error: 'bg-[#bfc212]',
+      error: 'bg-[#d62417]',
       warning: 'bg-[#e0c110]',
       success: 'bg-[#00c853]',
     },
@@ -28,15 +28,15 @@ export const Toast = ({ title, description, variant }: toastProps) => {
   return (
     <div
       className={cn(
-        'relative w-full max-w-xs overflow-hidden rounded-lg shadow-lg ',
+        'relative w-full max-w-xs overflow-hidden rounded-lg shadow-lg',
         variant,
       )}
     >
       {/* Green background layer */}
-      <div className={cn('absolute inset-0', variant)}></div>
+      <div className={cn(ToastVariants({ variant }), 'absolute inset-0')}></div>
 
       {/* Black translucent overlay */}
-      <div className="relative bg-black/80 p-4 px-2">
+      <div className="relative bg-black/85 p-4 px-2">
         <div className="flex items-center gap-3">
           <div
             className={cn(

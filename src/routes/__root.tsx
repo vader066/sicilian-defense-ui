@@ -13,7 +13,7 @@ interface MyRouterContext {
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   component: () => (
     <>
-      <Toaster />
+      <Toaster position="top-right" />
       <Outlet />
       <TanStackRouterDevtools />
       <TanstackQueryLayout />

@@ -19,7 +19,7 @@ export default function DeletePopover({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>{children}</PopoverTrigger>
       <PopoverContent className="w-56 flex flex-col gap-2">
-        <p className="text-sm">Are you sure you want to delete this?</p>
+        <p className="text-sm">Are you sure you want to remove this member?</p>
         <div className="flex justify-end gap-2">
           <Button variant="outline" size="sm" onClick={() => setOpen(false)}>
             Cancel
@@ -31,6 +31,7 @@ export default function DeletePopover({
               onConfirm()
               setOpen(false)
             }}
+            className="text-white"
           >
             Confirm
           </Button>

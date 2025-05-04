@@ -1,5 +1,5 @@
 import { players as playerstore } from '@/store/player-data'
-import { PLAYER, TTableData } from '@/types/database/models'
+import { type PLAYER, type TTableData } from '@/types/database/models'
 
 // creates a list of players and their rating difference after all the games they played
 export function calcRatingUpdates(tournament: TTableData[]): Updates[] {

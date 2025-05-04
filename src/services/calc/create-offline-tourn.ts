@@ -1,7 +1,11 @@
 // This will construct the appwrite database tournament data schema from the data
 // entered by admin
 import { v4 as uuidv4 } from 'uuid'
-import { GAME_TABLE_FORM, GAMES, TOURNAMENT } from '@/types/database/models'
+import {
+  type GAME_TABLE_FORM,
+  type GAMES,
+  type TOURNAMENT,
+} from '@/types/database/models'
 
 export function CreateAppWriteTourney(
   formGamesArray: GAME_TABLE_FORM[],

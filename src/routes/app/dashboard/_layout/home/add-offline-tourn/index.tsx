@@ -17,6 +17,8 @@ import { CreateAppWriteTourney } from '@/services/calc/create-offline-tourn'
 import { Spinner } from '@/components/ui/spinner'
 import { usePlayerData } from '@/contexts/players-context'
 import { RiErrorWarningFill } from 'react-icons/ri'
+import { localFetch } from '@/services/fetch'
+import { toast } from '@/components/toast'
 
 export const Route = createFileRoute(
   '/app/dashboard/_layout/home/add-offline-tourn/',
@@ -103,21 +105,25 @@ function DynamicForm() {
     console.log('Submitted Fields:', fields)
     const payload = CreateAppWriteTourney(fields)
     try {
-      const response = await fetch('/api/db/add-tournament', {
+      const response = await localFetch('/tournaments', {
         method: 'POST',
-        headers: {
-          'content-type': 'application/json',
-        },
         body: JSON.stringify({ tournament: payload }),
       })
-
-      if (!response.ok) {
+      if (response.status !== 201) {
         throw new Error('Could not create tournament')
       }
-      const res_obj = await response.json()
-      console.log(res_obj)
+      toast({
+        title: 'Created successfully',
+        description: 'The tournament was created successfully',
+        variant: 'success',
+      })
     } catch (error) {
       console.error(error)
+      toast({
+        title: 'Could not create',
+        description: 'The tournament could not created',
+        variant: 'error',
+      })
     } finally {
       setIsSaving(false)
     }

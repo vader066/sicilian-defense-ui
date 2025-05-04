@@ -5,6 +5,7 @@ import { CreateTournamentTables } from '@/services/calc/create-tournament-table'
 import { type APPWRITE_TOURNAMENT } from '@/types/database/models'
 import { useEffect, useState } from 'react'
 import { BiErrorCircle } from 'react-icons/bi'
+import { localFetch } from '@/services/fetch'
 
 export const Route = createFileRoute('/app/dashboard/_layout/history/')({
   component: History,
@@ -18,18 +19,8 @@ function History() {
   async function fetchTournament() {
     try {
       setIsFetching(true)
-      const response = await fetch('/api/db/get-tournaments', {
-        headers: {
-          'content-type': 'application/json',
-        },
-      })
-
-      if (!response.ok) {
-        throw new Error('Could not fetch tournaments')
-      }
-      const res_obj = await response.json()
-      // console.log(res_obj.data);
-      setTournArray(res_obj.data)
+      const response = await localFetch<APPWRITE_TOURNAMENT>('/tournaments')
+      setTournArray(response.data)
     } catch (error: any) {
       console.error(error.message)
       setIsError(true)

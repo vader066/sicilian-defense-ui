@@ -1,5 +1,4 @@
-'use client'
-
+import { localFetch } from '@/services/fetch'
 import { type APPWRITE_PLAYERS, type PLAYER } from '@/types/database/models'
 import { createContext, useContext, useEffect, useState } from 'react'
 
@@ -34,17 +33,8 @@ export function PlayerDataProvider({
 
   async function fetchPlayers() {
     try {
-      const response = await fetch('http://localhost:5001/api/players', {
-        headers: {
-          'content-type': 'application/json',
-        },
-      })
-
-      if (!response.ok) {
-        throw new Error('Could not fetch players')
-      }
-      const res: { data: APPWRITE_PLAYERS } = await response.json()
-      setPlayers(res.data.documents)
+      const response = await localFetch<APPWRITE_PLAYERS>('/players')
+      setPlayers(response.data.documents)
     } catch (error) {
       console.error(error)
       setError('Could not fetch players')
