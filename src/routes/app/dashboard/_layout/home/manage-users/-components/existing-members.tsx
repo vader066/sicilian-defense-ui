@@ -8,6 +8,7 @@ import { FaTrash } from 'react-icons/fa'
 import { Spinner } from '@/components/ui/spinner'
 import { localFetch } from '@/services/fetch'
 import { toast } from '@/components/toast'
+import { ActionsButton } from './actions-button'
 
 export function ExistingMember() {
   const [deletingId, setDeletingId] = useState<string | null>(null) // Track the ID of the row being deleted
@@ -56,27 +57,29 @@ export function ExistingMember() {
               accessorKey: 'id',
               header: 'Action',
               cell: ({ row }) => {
-                const rowId = row.getValue('id')
+                const rowId = row.getValue('id') as string
                 return (
-                  <DeletePopover
-                    onConfirm={() => {
-                      deletePlayer(row.getValue('id'))
-                      console.log('deleted')
-                    }}
-                  >
-                    <button
-                      disabled={deletingId === rowId} // Disable only the button for the row being deleted
-                      className="hover:bg-black/5 rounded-md px-2 py-3"
+                  <ActionsButton playerId={rowId}>
+                    <DeletePopover
+                      onConfirm={() => {
+                        deletePlayer(row.getValue('id'))
+                        console.log('deleted')
+                      }}
                     >
-                      {deletingId === rowId ? ( // Show spinner only for the row being deleted
-                        <Spinner />
-                      ) : (
-                        <div>
-                          <FaTrash className="text-red-400" />
-                        </div>
-                      )}
-                    </button>
-                  </DeletePopover>
+                      <button
+                        disabled={deletingId === rowId} // Disable only the button for the row being deleted
+                        className="hover:bg-black/5 rounded-md px-2 py-3"
+                      >
+                        {deletingId === rowId ? ( // Show spinner only for the row being deleted
+                          <Spinner />
+                        ) : (
+                          <div>
+                            <FaTrash className="text-red-400" />
+                          </div>
+                        )}
+                      </button>
+                    </DeletePopover>
+                  </ActionsButton>
                 )
               },
             },
