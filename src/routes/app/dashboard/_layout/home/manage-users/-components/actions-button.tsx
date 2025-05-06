@@ -26,11 +26,12 @@ export function ActionsButton({
               <span>Edit</span>
             </li>
           </DropdownMenuItem>
-          <DropdownMenuItem>
-            <li className="flex items-center gap-2 text-xs">
-              {children}
-              <span>Delete</span>
-            </li>
+          <DropdownMenuItem
+            onSelect={(event) => {
+              event.preventDefault() // Prevent the dropdown from closing
+            }}
+          >
+            {children}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

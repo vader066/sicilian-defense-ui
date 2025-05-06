@@ -1,4 +1,6 @@
 import { toast } from '@/components/toast'
+import { Button } from '@/components/ui/button'
+import { DialogClose, DialogFooter } from '@/components/ui/dialog'
 import {
   Select,
   SelectContent,
@@ -8,11 +10,12 @@ import {
 } from '@/components/ui/select'
 import { Spinner } from '@/components/ui/spinner'
 import { cn } from '@/lib/utils'
-import type { Member, sex } from '@/types/database/models'
-import { type FormEvent, useState } from 'react'
+import { localFetch } from '@/services/fetch'
+import type { Member, PLAYER, sex } from '@/types/database/models'
+import { type FormEvent, useEffect, useState } from 'react'
 import { FaChessKing, FaChessQueen } from 'react-icons/fa'
 
-export function AddMember() {
+export function AddMember({ player }: { player?: PLAYER }) {
   const [isLoading, setIsLoading] = useState(false)
   const [edit, setEdit] = useState(false)
   const [form, setForm] = useState<Member>({
@@ -25,27 +28,43 @@ export function AddMember() {
     sex: undefined,
   })
 
+  // This component is also used to edit an existing member's info when a player object is passed
+  useEffect(() => {
+    if (player) {
+      const nameArr = player.name.split(' ')
+      const lastName = nameArr.pop()
+      const populatedFields: Member = {
+        first_name: nameArr.join(' '),
+        last_name: lastName ?? '',
+        rating: player.rating,
+        programme: '',
+        dob: new Date(),
+        sex: undefined,
+        username: player.id,
+      }
+      setForm(populatedFields)
+    }
+  }, [])
+
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsLoading(true)
     try {
-      const response = await fetch('http://localhost:5001/api/players', {
+      if (player) {
+        // if player object is passed use the update player endpoint instead
+        const response = await localFetch(`/players/${player.id}`, {
+          method: 'PUT',
+          body: JSON.stringify(form),
+        })
+        console.log(response)
+      }
+
+      const response = await localFetch('/players', {
         method: 'POST',
-        headers: {
-          'content-type': 'application/json',
-        },
         body: JSON.stringify(form),
       })
-      if (!response.ok) {
-        const error = await response.json()
-        console.log(error.type)
-        toast({
-          title: 'Error Occurred',
-          description: error.message,
-          variant: 'error',
-        })
-        throw Error(error.message)
-      }
+      console.log(response)
+
       toast({
         title: 'Created Successfully',
         description: 'The player was successfully added to the database',
@@ -53,13 +72,19 @@ export function AddMember() {
       })
     } catch (error: any) {
       console.log(error.message)
+      toast({
+        title: 'Error Occurred',
+        description: error.message,
+        variant: 'error',
+      })
     } finally {
       setIsLoading(false)
     }
   }
 
   return (
-    <form className="w-[50%] flex flex-col gap-4" onSubmit={onSubmit}>
+    <form className="w-full flex flex-col gap-4" onSubmit={onSubmit}>
+      {/* <form className="w-[50%] flex flex-col gap-4" onSubmit={onSubmit}> */}
       <div className="flex gap-6 min-h-max">
         <div className="size-32 rounded-full bg-green-300"></div>
         <div className="flex flex-col gap-2 min-h-full justify-center">
@@ -200,18 +225,35 @@ export function AddMember() {
             </div>
           </div>
         </div>
-        <button
-          disabled={isLoading}
-          type="submit"
-          className={cn(
-            'bg-black text-white p-3 px-20 mt-10 rounded-lg w-fit',
-            {
-              'opacity-30': isLoading,
-            },
-          )}
-        >
-          {isLoading ? <Spinner /> : 'Add Member'}
-        </button>
+        {player ? (
+          <DialogFooter className="mt-4 flex w-full flex-row items-center justify-between gap-4 border-t px-4 pt-3 sm:gap-20 sm:px-8">
+            <DialogClose asChild>
+              <Button variant="ghost" className="text-muted-foreground">
+                Cancel
+              </Button>
+            </DialogClose>
+            <Button
+              type="submit"
+              disabled={isLoading}
+              className="bg-primary text-white"
+            >
+              {isLoading ? <Spinner /> : 'Submit'}
+            </Button>
+          </DialogFooter>
+        ) : (
+          <button
+            disabled={isLoading}
+            type="submit"
+            className={cn(
+              'bg-black text-white p-3 px-20 mt-10 rounded-lg w-fit',
+              {
+                'opacity-30': isLoading,
+              },
+            )}
+          >
+            {isLoading ? <Spinner /> : 'Add Member'}
+          </button>
+        )}
       </section>
     </form>
   )

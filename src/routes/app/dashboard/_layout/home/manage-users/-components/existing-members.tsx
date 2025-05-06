@@ -8,7 +8,9 @@ import { FaTrash } from 'react-icons/fa'
 import { Spinner } from '@/components/ui/spinner'
 import { localFetch } from '@/services/fetch'
 import { toast } from '@/components/toast'
-import { ActionsButton } from './actions-button'
+import { EditIcon } from 'lucide-react'
+import { Dialog, DialogTrigger } from '@/components/ui/dialog'
+import { EditPlayerInfo } from './update-dialog'
 
 export function ExistingMember() {
   const [deletingId, setDeletingId] = useState<string | null>(null) // Track the ID of the row being deleted
@@ -55,31 +57,54 @@ export function ExistingMember() {
             { accessorKey: 'rating', header: 'Rating' },
             {
               accessorKey: 'id',
-              header: 'Action',
+              header: 'Remove',
               cell: ({ row }) => {
                 const rowId = row.getValue('id') as string
                 return (
-                  <ActionsButton playerId={rowId}>
-                    <DeletePopover
-                      onConfirm={() => {
-                        deletePlayer(row.getValue('id'))
-                        console.log('deleted')
-                      }}
+                  // <ActionsButton playerId={rowId}>
+                  <DeletePopover
+                    onConfirm={() => {
+                      deletePlayer(row.getValue('id'))
+                      console.log('deleted')
+                    }}
+                  >
+                    <button
+                      disabled={deletingId === rowId} // Disable only the button for the row being deleted
+                      className="hover:bg-black/5 rounded-md px-2 py-3"
                     >
+                      {deletingId === rowId ? ( // Show spinner only for the row being deleted
+                        <Spinner />
+                      ) : (
+                        <div className="flex items-center gap-2 text-xs">
+                          <FaTrash className="text-red-400" />
+                        </div>
+                      )}
+                    </button>
+                  </DeletePopover>
+                  // </ActionsButton>
+                )
+              },
+            },
+            {
+              accessorKey: 'id',
+              header: 'Edit',
+              cell: ({ row }) => {
+                const rowId = row.getValue('id') as string
+                const player = row.original
+                return (
+                  <Dialog>
+                    <DialogTrigger asChild>
                       <button
                         disabled={deletingId === rowId} // Disable only the button for the row being deleted
-                        className="hover:bg-black/5 rounded-md px-2 py-3"
+                        type="button"
+                        className="hover:bg-black/5 rounded-md disabled:opacity-15 px-2 py-3"
+                        // className="border-0 bg-transparent p-0 hover:bg-transparent"
                       >
-                        {deletingId === rowId ? ( // Show spinner only for the row being deleted
-                          <Spinner />
-                        ) : (
-                          <div>
-                            <FaTrash className="text-red-400" />
-                          </div>
-                        )}
+                        <EditIcon className="h-5 w-5 text-gray-500" />
                       </button>
-                    </DeletePopover>
-                  </ActionsButton>
+                    </DialogTrigger>
+                    <EditPlayerInfo player={player} />
+                  </Dialog>
                 )
               },
             },

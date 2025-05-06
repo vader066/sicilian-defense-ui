@@ -10,7 +10,7 @@ export const Route = createFileRoute(
   component: ManageUsers,
 })
 
-type Tabs = 'add-member' | 'existing-member' | 'edit-member-info'
+type Tabs = 'add-member' | 'existing-member'
 
 function ManageUsers() {
   const [page, setPage] = useState<Tabs>('add-member')
@@ -21,7 +21,7 @@ function ManageUsers() {
         <div className="flex flex-col gap-1">
           <p className="text-2xl font-bold">Manage users</p>
           <p className="text-sm text-black/50">
-            Add delete and edit Member information
+            Add, Delete and Edit Member information
           </p>
         </div>
       </section>
@@ -49,32 +49,16 @@ function ManageUsers() {
           >
             Existing Member
           </button>
-          <button
-            onClick={() => setPage('edit-member-info')}
-            className={cn(
-              'px-4 py-2 border border-transparent border-b-0 rounded-t-lg',
-              {
-                'border-black/20 text-black/50': page === 'edit-member-info',
-              },
-            )}
-          >
-            Edit Member Info
-          </button>
         </ul>
         <div className="w-full border border-black/20 min-h-[500px] rounded-lg flex items-start py-6 justify-center">
-          {page === 'add-member' && <AddMember />}
+          {page === 'add-member' && (
+            <div className="w-[50%]">
+              <AddMember />
+            </div>
+          )}
           {page === 'existing-member' && <ExistingMember />}
-          {page === 'edit-member-info' && <EditMemberinfo />}
         </div>
       </section>
-    </div>
-  )
-}
-
-function EditMemberinfo() {
-  return (
-    <div>
-      <p className="text-2xl">Edit Member Info...</p>
     </div>
   )
 }

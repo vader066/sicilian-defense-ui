@@ -3,6 +3,8 @@ import { Spinner } from '@/components/ui/spinner'
 import { players } from '@/store/player-data'
 
 import { useState } from 'react'
+import { localFetch } from '@/services/fetch'
+import { toast } from '@/components/toast'
 
 export const Route = createFileRoute('/app/dashboard/_layout/settings/')({
   component: Settings,
@@ -12,30 +14,29 @@ function Settings() {
   const [isLoading, setIsLoading] = useState(false)
 
   async function handleClick() {
-    setIsLoading(true)
     try {
-      players.forEach(async (player) => {
-        // await createPlayer(player);
-        console.log(player)
+      setIsLoading(true)
+      const response = await localFetch('/players/populate', {
+        method: 'POST',
+        body: JSON.stringify(players),
+      })
+      console.log(response)
+      toast({
+        title: 'Players added successfully',
+        description: 'Players have been added to the database',
+        variant: 'success',
       })
     } catch (error) {
-      console.log(error)
+      console.error('Error adding players:', error)
+      toast({
+        title: 'Error adding players',
+        description: 'There was an error adding players to the database',
+        variant: 'error',
+      })
     } finally {
       setIsLoading(false)
     }
   }
-
-  // Backend needs to do this (i.e Add players in bulk)
-
-  // async function createPlayer(player: PLAYER) {
-  // 	await databases.createDocument(db, playerCollection, uuidv1(), {
-  // 		id: player.id,
-  // 		name: player.name,
-  // 		rating: player.rating,
-  // 		clubs: "KNUST CHESS CLUB", //use the name of the users club
-  // 	});
-  // 	console.log("Player collection created");
-  // }
 
   return (
     <div className="flex items-center justify-center">
