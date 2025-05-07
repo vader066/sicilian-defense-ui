@@ -40,9 +40,9 @@ function DynamicForm() {
         {
           id: uuidv4(),
           value: {
-            white: players[0].name,
-            black: players[2].name,
-            winner: players[2].name,
+            white: players[0].username,
+            black: players[2].username,
+            winner: players[2].username,
           },
         },
       ])
@@ -70,9 +70,9 @@ function DynamicForm() {
       {
         id: uuidv4(),
         value: {
-          white: players[0].name,
-          black: players[2].name,
-          winner: players[2].name,
+          white: players[0].username,
+          black: players[2].username,
+          winner: players[2].username,
         },
       },
     ])
@@ -149,8 +149,8 @@ function DynamicForm() {
             <SelectContent side="bottom">
               {players.map((player) => {
                 return (
-                  <SelectItem key={player.name} value={player.name}>
-                    <span>{player.name}</span>
+                  <SelectItem key={player.username} value={player.username}>
+                    <span>{`${player.first_name} ${player.last_name}`}</span>
                   </SelectItem>
                 )
               })}
@@ -169,8 +169,8 @@ function DynamicForm() {
             <SelectContent side="bottom">
               {players.map((player) => {
                 return (
-                  <SelectItem key={player.name} value={player.name}>
-                    <span>{player.name}</span>
+                  <SelectItem key={player.username} value={player.username}>
+                    <span>{`${player.first_name} ${player.last_name}`}</span>
                   </SelectItem>
                 )
               })}

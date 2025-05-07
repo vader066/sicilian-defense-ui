@@ -9,32 +9,32 @@ export interface CLUB {
 
 export interface GAMES {
   gameId: string
-  players: Array<string>
-  winner: string
+  black: PLAYER
+  white: PLAYER
+  winner: PLAYER
   date: string
   tournaments?: string
 }
 
 export interface TOURNAMENT {
   tournamentId: string
-  $id?: string
   games: Array<GAMES>
   players: Array<string>
   synced?: boolean
-  clubs?: string
+  club?: string
 }
 
 export type sex = 'male' | 'female' | undefined
 
-export type Member = {
-  first_name: string
-  last_name: string
-  programme: string
-  username: string
-  dob: Date
-  sex: sex
-  rating: number
-}
+// export type Member = {
+//   first_name: string
+//   last_name: string
+//   programme: string
+//   username: string
+//   dob: Date
+//   sex: sex
+//   rating: number
+// }
 
 export interface PLAYER {
   rating: number

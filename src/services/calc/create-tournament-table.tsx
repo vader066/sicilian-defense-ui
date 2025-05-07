@@ -7,6 +7,7 @@ import {
   type TTableData,
 } from '@/types/database/models'
 import { Toolbar } from '@/components/data-table/tournament-toolbar'
+import { useEffect } from 'react'
 
 // This function is for constructing the tournament table object to be displayed on the history page
 function CreateTournamentTData(games: GAMES[]): TTableData[] {
@@ -31,7 +32,7 @@ export function CreateTournamentTables(data: APPWRITE_TOURNAMENT) {
         DataTableToolbar={(props) => (
           <Toolbar
             {...props}
-            documentId={tourn.$id as string}
+            tournamentId={tourn.tournamentId as string}
             isSynced={tourn.synced as boolean}
           />
         )}

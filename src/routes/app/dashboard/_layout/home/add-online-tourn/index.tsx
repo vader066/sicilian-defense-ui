@@ -3,6 +3,8 @@ import { RecordNewTournament } from '@/services/lichess/record-tournament'
 import { type TOURNAMENT } from '@/types/database/models'
 import React, { useState } from 'react'
 import { Spinner } from '@/components/ui/spinner'
+import { localFetch } from '@/services/fetch'
+import { toast } from '@/components/toast'
 
 export const Route = createFileRoute(
   '/app/dashboard/_layout/home/add-online-tourn/',
@@ -26,22 +28,27 @@ function Page() {
     e.preventDefault()
     setIsLoadingb(true)
     try {
-      const response = await fetch('/api/db/add-tournament', {
+      const response = await localFetch('/tournaments', {
         method: 'POST',
-        headers: {
-          'content-type': 'application/json',
-        },
         body: JSON.stringify({
           tournament: data,
         }),
       })
-      if (!response.ok) {
-        throw new Error('Could not add tournament')
-      }
-      const res = await response.json()
-      console.log(res)
+
+      toast({
+        title: 'Created successfully',
+        description: 'Tournament has been added successfully',
+        variant: 'success',
+      })
+
+      console.log(response)
     } catch (error) {
       console.log(error)
+      toast({
+        title: 'Error creating tournament',
+        description: 'There was an error creating the tournament',
+        variant: 'error',
+      })
     } finally {
       setIsLoadingb(false)
     }

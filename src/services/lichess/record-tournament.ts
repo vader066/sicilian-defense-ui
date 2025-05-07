@@ -1,32 +1,27 @@
 import { type GAMES, type TOURNAMENT } from '@/types/database/models'
 import { type ARENATOURNAMENTGAME } from '@/types/lichess/game'
+import { localFetch } from '../fetch'
 
 // 1. fetch a tournament data from our api which fetches the tournament from lichess api
 export async function RecordNewTournament(tournamentId: string) {
   //fetch lichess tournament data through our api
   try {
-    const res = await fetch(
-      `/api/get-arena-games?tournamentId=${tournamentId}`,
-      {
-        headers: {
-          'content-type': 'application/json',
-        },
-      },
+    const response = await localFetch<ARENATOURNAMENTGAME[]>(
+      `/lichess-tournament/${tournamentId}`,
     )
-    if (!res.ok) {
-      console.error('Failed to fetch Tournament games data from Lichess')
-      return undefined
-    }
-    const response: ARENATOURNAMENTGAME[] = await res.json()
+    const lichessTournamentGames = response.data
     console.log('Games successfully fetched')
 
     //Create tournament game objects according to db schema
-    const tournamentGames = CreateTournamentGames(response, tournamentId)
+    const tournamentGames = CreateTournamentGames(
+      lichessTournamentGames,
+      tournamentId,
+    )
     //create tournament object according to db schema
     const tournament: TOURNAMENT = {
       tournamentId: tournamentId,
       games: tournamentGames,
-      players: getPlayers(response),
+      players: getPlayers(lichessTournamentGames),
     }
 
     return tournament

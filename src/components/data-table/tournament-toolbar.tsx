@@ -5,15 +5,16 @@ import { type TTableData } from '@/types/database/models'
 import { useState } from 'react'
 import { type Table } from '@tanstack/react-table'
 import { BiSearch } from 'react-icons/bi'
+import { localFetch } from '@/services/fetch'
 
 // This toolbar for tournament tables performs calculations and updates the tournament synced state on the database
 export function Toolbar({
   table,
-  documentId,
+  tournamentId,
   isSynced,
 }: {
   table: Table<TTableData>
-  documentId: string
+  tournamentId: string
   isSynced: boolean
 }) {
   const [isSyncing, setIsSyncing] = useState(false)
@@ -38,21 +39,10 @@ export function Toolbar({
     setIsSyncing(true)
     const updates = calcRatingUpdates(tData)
     try {
-      const response = await fetch('/api/db/sync-tournament', {
-        method: 'POST',
-        headers: {
-          'content-type': 'application/json',
-        },
-        body: JSON.stringify({
-          documentId: documentId,
-        }),
+      const response = await localFetch(`/sync-tournament/${tournamentId}`, {
+        method: 'PATCH',
       })
-
-      if (!response.ok) {
-        throw new Error('could not sync tournament')
-      }
-      const res_obj = await response.json()
-      console.log(res_obj)
+      console.log(response)
       setIsRated(true)
     } catch (error) {
       console.log(error)
@@ -91,7 +81,9 @@ export function Toolbar({
           className="focus:outline-none"
         />
       </label>
-      <span className="flex font-bold items-center text-2xl">Tourney Name</span>
+      <span className="flex font-bold items-center text-2xl">
+        {tournamentId ?? 'N/A'}
+      </span>
     </ul>
   )
 }

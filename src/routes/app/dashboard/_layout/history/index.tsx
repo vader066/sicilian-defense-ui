@@ -57,7 +57,7 @@ function History() {
 function GeneratingTables() {
   return (
     <div className="flex flex-col text-md font-bold items-center justify-center">
-      {/* <p>Generating Tables please wait...</p> */}
+      <p>Generating Tables please wait...</p>
       <Spinner />
     </div>
   )
