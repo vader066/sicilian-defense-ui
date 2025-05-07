@@ -52,7 +52,7 @@ function ManageUsers() {
         </ul>
         <div className="w-full border border-black/20 min-h-[500px] rounded-lg flex items-start py-6 justify-center">
           {page === 'add-member' && (
-            <div className="w-[50%]">
+            <div className="lg:w-[50%] md:w-[70%] w-[90%] ">
               <AddMember />
             </div>
           )}

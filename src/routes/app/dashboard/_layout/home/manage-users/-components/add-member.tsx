@@ -1,6 +1,12 @@
 import { toast } from '@/components/toast'
 import { Button } from '@/components/ui/button'
+import { Calendar } from '@/components/ui/calendar'
 import { DialogClose, DialogFooter } from '@/components/ui/dialog'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
 import {
   Select,
   SelectContent,
@@ -12,6 +18,8 @@ import { Spinner } from '@/components/ui/spinner'
 import { cn } from '@/lib/utils'
 import { localFetch } from '@/services/fetch'
 import type { PLAYER, sex } from '@/types/database/models'
+import { format } from 'date-fns'
+import { CalendarIcon } from 'lucide-react'
 import { type FormEvent, useEffect, useState } from 'react'
 import { FaChessKing, FaChessQueen } from 'react-icons/fa'
 
@@ -103,27 +111,31 @@ export function AddMember({ player }: { player?: PLAYER }) {
         </div>
       </div>
       <section className="contents">
-        <div className="flex gap-5">
-          <div className="flex w-full flex-col gap-2">
-            <label htmlFor="first_name">First Name</label>
+        <div className="flex gap-5 w-full">
+          <div className="flex flex-1 flex-col gap-2">
+            <label htmlFor="first_name" className="w-full">
+              First Name
+            </label>
             <input
               type="text"
               value={form.first_name}
               name="first_name"
               id="first_name"
               onChange={(e) => setForm({ ...form, first_name: e.target.value })}
-              className="border border-black/20 rounded-md p-2"
+              className="border border-black/20 rounded-md p-2 w-full"
             />
           </div>
-          <div className="flex w-full flex-col gap-2">
-            <label htmlFor="last_name">Last Name</label>
+          <div className="flex flex-1 flex-col gap-2">
+            <label htmlFor="last_name" className="w-full">
+              Last Name
+            </label>
             <input
               type="text"
               value={form.last_name}
               name="last_name"
               id="last_name"
               onChange={(e) => setForm({ ...form, last_name: e.target.value })}
-              className="border border-black/20 rounded-md p-2"
+              className="border border-black/20 rounded-md p-2 w-full"
             />
           </div>
         </div>
@@ -147,7 +159,7 @@ export function AddMember({ player }: { player?: PLAYER }) {
               name="username"
               id="username"
               onChange={(e) => setForm({ ...form, username: e.target.value })}
-              className="border border-black/20 rounded-md p-2"
+              className="border border-black/20 rounded-md p-2 w-full"
             />
           </div>
           <div className="flex w-full flex-col gap-2">
@@ -182,16 +194,33 @@ export function AddMember({ player }: { player?: PLAYER }) {
         </div>
         <div className="flex w-full flex-col gap-2">
           <label htmlFor="dob">Date of Birth</label>
-          <input
-            type="text"
-            value={form.dob.toUTCString()}
-            name="dob"
-            id="dob"
-            onChange={(e) =>
-              setForm({ ...form, dob: new Date(e.target.value) })
-            }
-            className="border border-black/20 rounded-md p-2"
-          />
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant={'outline'}
+                className={cn(
+                  'w-full pl-3 h-11 text-left font-normal',
+                  !form.dob && 'text-muted-foreground',
+                )}
+              >
+                {form.dob ? format(form.dob, 'PPP') : <span>Pick a date</span>}
+                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar
+                mode="single"
+                selected={form.dob}
+                onSelect={(e) => {
+                  setForm({ ...form, dob: e as Date })
+                }}
+                disabled={(date) =>
+                  date > new Date() || date < new Date('1900-01-01')
+                }
+                initialFocus
+              />
+            </PopoverContent>
+          </Popover>
         </div>
         <div className="flex w-full flex-col gap-3 items-center">
           <p className="text-black/50 text-xs text-center w-[50%] italic">
@@ -224,7 +253,7 @@ export function AddMember({ player }: { player?: PLAYER }) {
                 onChange={(e) =>
                   setForm({ ...form, rating: parseInt(e.target.value) })
                 }
-                className={cn('border border-black/20 rounded-md p-2', {
+                className={cn('border border-black/20 rounded-md p-2 w-full', {
                   'text-black/50': !edit,
                 })}
               />
