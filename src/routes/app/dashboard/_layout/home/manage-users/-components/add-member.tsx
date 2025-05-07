@@ -11,14 +11,14 @@ import {
 import { Spinner } from '@/components/ui/spinner'
 import { cn } from '@/lib/utils'
 import { localFetch } from '@/services/fetch'
-import type { Member, PLAYER, sex } from '@/types/database/models'
+import type { PLAYER, sex } from '@/types/database/models'
 import { type FormEvent, useEffect, useState } from 'react'
 import { FaChessKing, FaChessQueen } from 'react-icons/fa'
 
 export function AddMember({ player }: { player?: PLAYER }) {
   const [isLoading, setIsLoading] = useState(false)
   const [edit, setEdit] = useState(false)
-  const [form, setForm] = useState<Member>({
+  const [form, setForm] = useState<PLAYER>({
     first_name: '',
     last_name: '',
     programme: '',
@@ -26,23 +26,13 @@ export function AddMember({ player }: { player?: PLAYER }) {
     dob: new Date(),
     rating: 1400,
     sex: undefined,
+    club: 'KNUST CHESS CLUB',
   })
 
   // This component is also used to edit an existing member's info when a player object is passed
   useEffect(() => {
     if (player) {
-      const nameArr = player.name.split(' ')
-      const lastName = nameArr.pop()
-      const populatedFields: Member = {
-        first_name: nameArr.join(' '),
-        last_name: lastName ?? '',
-        rating: player.rating,
-        programme: '',
-        dob: new Date(),
-        sex: undefined,
-        username: player.id,
-      }
-      setForm(populatedFields)
+      setForm({ ...player, dob: new Date(player.dob) })
     }
   }, [])
 
@@ -51,25 +41,41 @@ export function AddMember({ player }: { player?: PLAYER }) {
     setIsLoading(true)
     try {
       if (player) {
+        const playerData: PLAYER = {
+          first_name: form.first_name,
+          last_name: form.last_name,
+          programme: form.programme,
+          username: form.username,
+          dob: form.dob,
+          rating: form.rating,
+          sex: form.sex,
+          club: form.club,
+        }
+        console.log(playerData)
         // if player object is passed use the update player endpoint instead
-        const response = await localFetch(`/players/${player.id}`, {
+        const response = await localFetch(`/players/${player.username}`, {
           method: 'PUT',
+          body: JSON.stringify(playerData),
+        })
+        toast({
+          title: 'Updated Successfully',
+          description: 'The player was successfully updated',
+          variant: 'success',
+        })
+        console.log(response)
+      } else {
+        const response = await localFetch('/players', {
+          method: 'POST',
           body: JSON.stringify(form),
         })
         console.log(response)
+
+        toast({
+          title: 'Created Successfully',
+          description: 'The player was successfully added to the database',
+          variant: 'success',
+        })
       }
-
-      const response = await localFetch('/players', {
-        method: 'POST',
-        body: JSON.stringify(form),
-      })
-      console.log(response)
-
-      toast({
-        title: 'Created Successfully',
-        description: 'The player was successfully added to the database',
-        variant: 'success',
-      })
     } catch (error: any) {
       console.log(error.message)
       toast({
@@ -178,7 +184,7 @@ export function AddMember({ player }: { player?: PLAYER }) {
           <label htmlFor="dob">Date of Birth</label>
           <input
             type="text"
-            value={form.dob.toDateString()}
+            value={form.dob.toUTCString()}
             name="dob"
             id="dob"
             onChange={(e) =>

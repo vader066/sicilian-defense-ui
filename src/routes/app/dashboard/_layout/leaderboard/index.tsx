@@ -21,8 +21,15 @@ function Leaderboard() {
           DataTableToolbar={(props) => <Toolbar {...props} />}
           isLoading={isLoading}
           columns={[
-            { accessorKey: 'name', header: 'Name' },
-            { accessorKey: 'id', header: 'ID' },
+            {
+              accessorKey: 'first_name',
+              header: 'First Name',
+            },
+            {
+              accessorKey: 'last_name',
+              header: 'Last Name',
+            },
+            { accessorKey: 'username', header: 'Username' },
             { accessorKey: 'rating', header: 'Rating' },
           ]}
         />

@@ -37,10 +37,14 @@ export type Member = {
 }
 
 export interface PLAYER {
-  id: string
-  name: string
   rating: number
-  clubs?: string
+  club: string
+  sex: sex
+  dob: Date
+  username: string
+  programme: string
+  first_name: string
+  last_name: string
 }
 
 export interface APPWRITE_TOURNAMENT {

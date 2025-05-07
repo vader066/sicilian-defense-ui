@@ -13,11 +13,11 @@ import { Dialog, DialogTrigger } from '@/components/ui/dialog'
 import { EditPlayerInfo } from './update-dialog'
 
 export function ExistingMember() {
-  const [deletingId, setDeletingId] = useState<string | null>(null) // Track the ID of the row being deleted
-  const deletePlayer = async (id: string) => {
+  const [deletingUsername, setDeletingUsername] = useState<string | null>(null) // Track the username of the row being deleted
+  const deletePlayer = async (username: string) => {
     try {
-      setDeletingId(id) // Set the ID of the row being deleted
-      await localFetch(`/players/${id}`, {
+      setDeletingUsername(username) // Set the username of the row being deleted
+      await localFetch(`/players/${username}`, {
         method: 'DELETE',
       })
       toast({
@@ -28,7 +28,7 @@ export function ExistingMember() {
 
       // Remove the deleted player from the table
       setPlayers((prevPlayers) =>
-        prevPlayers.filter((player) => player.id !== id),
+        prevPlayers.filter((player) => player.username !== username),
       )
     } catch (error: any) {
       console.log('there was an error')
@@ -39,7 +39,7 @@ export function ExistingMember() {
         variant: 'error',
       })
     } finally {
-      setDeletingId(null) // Reset the deleting ID
+      setDeletingUsername(null) // Reset the deleting ID
     }
   }
 
@@ -52,27 +52,34 @@ export function ExistingMember() {
           DataTableToolbar={(props) => <Toolbar {...props} />}
           isLoading={isLoading}
           columns={[
-            { accessorKey: 'name', header: 'Name' },
-            { accessorKey: 'id', header: 'ID' },
+            {
+              accessorKey: 'first_name',
+              header: 'First Name',
+            },
+            {
+              accessorKey: 'last_name',
+              header: 'Last Name',
+            },
+            { accessorKey: 'username', header: ' Username' },
             { accessorKey: 'rating', header: 'Rating' },
             {
-              accessorKey: 'id',
+              accessorKey: 'username',
               header: 'Remove',
               cell: ({ row }) => {
-                const rowId = row.getValue('id') as string
+                const rowId = row.getValue('username') as string
                 return (
                   // <ActionsButton playerId={rowId}>
                   <DeletePopover
                     onConfirm={() => {
-                      deletePlayer(row.getValue('id'))
+                      deletePlayer(row.getValue('username'))
                       console.log('deleted')
                     }}
                   >
                     <button
-                      disabled={deletingId === rowId} // Disable only the button for the row being deleted
+                      disabled={deletingUsername === rowId} // Disable only the button for the row being deleted
                       className="hover:bg-black/5 rounded-md px-2 py-3"
                     >
-                      {deletingId === rowId ? ( // Show spinner only for the row being deleted
+                      {deletingUsername === rowId ? ( // Show spinner only for the row being deleted
                         <Spinner />
                       ) : (
                         <div className="flex items-center gap-2 text-xs">
@@ -86,16 +93,16 @@ export function ExistingMember() {
               },
             },
             {
-              accessorKey: 'id',
+              accessorKey: 'username',
               header: 'Edit',
               cell: ({ row }) => {
-                const rowId = row.getValue('id') as string
+                const rowId = row.getValue('username') as string
                 const player = row.original
                 return (
                   <Dialog>
                     <DialogTrigger asChild>
                       <button
-                        disabled={deletingId === rowId} // Disable only the button for the row being deleted
+                        disabled={deletingUsername === rowId} // Disable only the button for the row being deleted
                         type="button"
                         className="hover:bg-black/5 rounded-md disabled:opacity-15 px-2 py-3"
                         // className="border-0 bg-transparent p-0 hover:bg-transparent"
