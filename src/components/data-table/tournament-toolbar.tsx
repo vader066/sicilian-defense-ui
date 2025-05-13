@@ -1,11 +1,13 @@
 import { cn } from '@/lib/utils'
 import { Spinner } from '../ui/spinner'
-import { calcRatingUpdates } from '@/services/calc/calculate-ratings'
-import { type TTableData } from '@/types/database/models'
+import { ratingPointsEval } from '@/services/tournament-services/tourney-rating'
+import { type GAMES } from '@/types/database/models'
 import { useState } from 'react'
 import { type Table } from '@tanstack/react-table'
 import { BiSearch } from 'react-icons/bi'
 import { localFetch } from '@/services/fetch'
+import { usePlayerData } from '@/contexts/players-context'
+import { toast } from '../toast'
 
 // This toolbar for tournament tables performs calculations and updates the tournament synced state on the database
 export function Toolbar({
@@ -13,7 +15,7 @@ export function Toolbar({
   tournamentId,
   isSynced,
 }: {
-  table: Table<TTableData>
+  table: Table<GAMES>
   tournamentId: string
   isSynced: boolean
 }) {
@@ -21,6 +23,7 @@ export function Toolbar({
   const [isRated, setIsRated] = useState(isSynced)
   const tData = table.options.data
 
+  // search functionality
   const winner = table.getState().columnFilters.find((f) => {
     f.id === 'winner'
   })?.value
@@ -34,21 +37,38 @@ export function Toolbar({
         })
     })
   }
+  const { players } = usePlayerData()
 
-  async function syncRatings(tData: TTableData[]) {
+  // calculate ratingUpdates
+  async function syncRatings(tData: GAMES[]) {
     setIsSyncing(true)
-    const updates = calcRatingUpdates(tData)
+    const { updatedGames, ratingUpdates } = ratingPointsEval({
+      tourneyGames: tData,
+      globPlayers: players,
+    })
     try {
+      console.log(tournamentId)
       const response = await localFetch(`/sync-tournament/${tournamentId}`, {
         method: 'PATCH',
+        body: JSON.stringify({
+          games: updatedGames,
+          ratingUpdates: ratingUpdates,
+        }),
       })
+
       console.log(response)
       setIsRated(true)
+      toast({
+        title: 'Tournament synced successfully',
+        description: 'Tournament has been synced successfully',
+        variant: 'success',
+      })
     } catch (error) {
       console.log(error)
     } finally {
       setIsSyncing(false)
-      // console.log(updates);
+      console.log(updatedGames)
+      // console.log(ratingUpdates)
     }
   }
   return (

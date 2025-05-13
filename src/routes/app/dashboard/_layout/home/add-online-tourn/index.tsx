@@ -11,7 +11,6 @@ export const Route = createFileRoute(
 )({
   component: Page,
 })
-;('use client')
 
 function Page() {
   const [isLoading, setIsLoading] = useState(false)

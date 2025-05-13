@@ -12,13 +12,14 @@ import { v4 as uuidv4 } from 'uuid'
 import { BiSave } from 'react-icons/bi'
 import { BsPlusCircleDotted } from 'react-icons/bs'
 import { FaTimesCircle } from 'react-icons/fa'
-import { type GAME_TABLE_FORM } from '@/types/database/models'
-import { CreateAppWriteTourney } from '@/services/calc/create-offline-tourn'
+import { type GAMES } from '@/types/database/models'
+import { CreateAppWriteTourney } from '@/services/tournament-services/index'
 import { Spinner } from '@/components/ui/spinner'
 import { usePlayerData } from '@/contexts/players-context'
 import { RiErrorWarningFill } from 'react-icons/ri'
 import { localFetch } from '@/services/fetch'
 import { toast } from '@/components/toast'
+// import { players } from '@/store/player-data'
 
 export const Route = createFileRoute(
   '/app/dashboard/_layout/home/add-offline-tourn/',
@@ -31,19 +32,24 @@ function DynamicForm() {
   const { players, isLoading, error } = usePlayerData()
   const [isSaving, setIsSaving] = useState(false)
   const [canRemove, setCanRemove] = useState(false)
-  const [fields, setFields] = useState<Array<GAME_TABLE_FORM>>([])
+  const [fields, setFields] = useState<Array<GAMES>>([])
+  const [tournamentName, setTournamentName] = useState('')
+
+  const getPlayerName = (username: string): string => {
+    const player = players.find((p) => p.username === username)
+    return `${player?.first_name ?? 'N/A'} ${player?.last_name ?? ''}`
+  }
 
   //Initialization before render because selects can't be empty
   useEffect(() => {
     if (players && players.length > 0) {
       setFields([
         {
-          id: uuidv4(),
-          value: {
-            white: players[0].username,
-            black: players[2].username,
-            winner: players[2].username,
-          },
+          gameId: uuidv4().slice(0, 19),
+          white: players[0].username,
+          black: players[2].username,
+          winner: players[2].username,
+          date: new Date(),
         },
       ])
     }
@@ -67,13 +73,13 @@ function DynamicForm() {
   const handleAddField = () => {
     setFields([
       ...fields,
+
       {
-        id: uuidv4(),
-        value: {
-          white: players[0].username,
-          black: players[2].username,
-          winner: players[2].username,
-        },
+        gameId: uuidv4().slice(0, 19),
+        white: players[0].username,
+        black: players[2].username,
+        winner: players[2].username,
+        date: new Date(),
       },
     ])
     setCanRemove(true)
@@ -82,11 +88,11 @@ function DynamicForm() {
   const handleSelectChange = (value: string, name: string, index: number) => {
     const newFields = [...fields]
     if (name === 'white') {
-      newFields[index].value.white = value
+      newFields[index].white = value
     } else if (name === 'black') {
-      newFields[index].value.black = value
+      newFields[index].black = value
     } else if (name === 'winner') {
-      newFields[index].value.winner = value
+      newFields[index].winner = value
     }
     setFields(newFields) // Update state for the specific field
   }
@@ -103,7 +109,10 @@ function DynamicForm() {
     event.preventDefault()
     setIsSaving(true)
     console.log('Submitted Fields:', fields)
-    const payload = CreateAppWriteTourney(fields)
+    const payload = CreateAppWriteTourney({
+      games: fields,
+      tournamentName: tournamentName,
+    })
     try {
       const response = await localFetch('/tournaments', {
         method: 'POST',
@@ -121,7 +130,7 @@ function DynamicForm() {
       console.error(error)
       toast({
         title: 'Could not create',
-        description: 'The tournament could not created',
+        description: 'The tournament could not be created',
         variant: 'error',
       })
     } finally {
@@ -134,22 +143,37 @@ function DynamicForm() {
       onSubmit={(event: any) => handleSubmit(event)}
       className="flex flex-col gap-3"
     >
+      <div className="flex flex-col gap-2 mb-5">
+        <label htmlFor="tournamentName" className="text-xl font-bold">
+          Tournament Name
+        </label>
+        <input
+          type="text"
+          onChange={(e) => {
+            setTournamentName(e.target.value)
+          }}
+          value={tournamentName}
+          placeholder="Enter a name for this tournament"
+          id="tournamentName"
+          className="border border-black/20 rounded-md p-2 w-[50%]"
+        />
+      </div>
       {fields.map((field, index) => (
-        <div className="flex gap-3" key={field.id}>
+        <div className="flex gap-3" key={field.gameId}>
           <Select
             name="white"
-            value={field.value.white}
+            value={field.white}
             onValueChange={(value) => {
               handleSelectChange(value, 'white', index)
             }}
           >
             <SelectTrigger className="h-8 w-fit bg-white py-5">
-              <SelectValue placeholder={field.value.white} />
+              <SelectValue placeholder={field.white} />
             </SelectTrigger>
             <SelectContent side="bottom">
-              {players.map((player) => {
+              {players.map((player, idx) => {
                 return (
-                  <SelectItem key={player.username} value={player.username}>
+                  <SelectItem key={idx} value={player.username}>
                     <span>{`${player.first_name} ${player.last_name}`}</span>
                   </SelectItem>
                 )
@@ -158,18 +182,18 @@ function DynamicForm() {
           </Select>
           <Select
             name="black"
-            value={field.value.black}
+            value={field.black}
             onValueChange={(value) => {
               handleSelectChange(value, 'black', index)
             }}
           >
             <SelectTrigger className="h-8 w-fit bg-white py-5">
-              <SelectValue placeholder={field.value.black} />
+              <SelectValue placeholder={field.black} />
             </SelectTrigger>
             <SelectContent side="bottom">
-              {players.map((player) => {
+              {players.map((player, idx) => {
                 return (
-                  <SelectItem key={player.username} value={player.username}>
+                  <SelectItem key={idx} value={player.username}>
                     <span>{`${player.first_name} ${player.last_name}`}</span>
                   </SelectItem>
                 )
@@ -178,20 +202,20 @@ function DynamicForm() {
           </Select>
           <Select
             name="winner"
-            value={field.value.winner}
+            value={field.winner}
             onValueChange={(value) => {
               handleSelectChange(value, 'winner', index)
             }}
           >
             <SelectTrigger className="h-8 w-fit bg-white py-5">
-              <SelectValue placeholder={field.value.winner} />
+              <SelectValue placeholder={field.winner} />
             </SelectTrigger>
             <SelectContent side="bottom">
-              <SelectItem value={field.value.white}>
-                <span>{field.value.white}</span>
+              <SelectItem value={field.white}>
+                <span>{getPlayerName(field.white)}</span>
               </SelectItem>
-              <SelectItem value={field.value.black}>
-                <span>{field.value.black}</span>
+              <SelectItem value={field.black}>
+                <span>{getPlayerName(field.black)}</span>
               </SelectItem>
             </SelectContent>
           </Select>

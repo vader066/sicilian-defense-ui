@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { Spinner } from '@/components/ui/spinner'
-import { CreateTournamentTables } from '@/services/calc/create-tournament-table'
+import { CreateTournamentTables } from '@/services/tournament-services/index'
 // import { tournamentStore } from "@/store/tournament-data";
 import { type APPWRITE_TOURNAMENT } from '@/types/database/models'
 import { useEffect, useState } from 'react'

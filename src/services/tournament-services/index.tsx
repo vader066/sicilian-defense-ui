@@ -1,31 +1,44 @@
-'use client'
-
 import DataTable from '@/components/data-table'
+import { Toolbar } from '@/components/data-table/tournament-toolbar'
 import {
   type APPWRITE_TOURNAMENT,
   type GAMES,
-  type TTableData,
+  type TOURNAMENT,
 } from '@/types/database/models'
-import { Toolbar } from '@/components/data-table/tournament-toolbar'
-import { useEffect } from 'react'
 
-// This function is for constructing the tournament table object to be displayed on the history page
-function CreateTournamentTData(games: GAMES[]): TTableData[] {
-  const tournamentTableData: TTableData[] = games.map((game) => {
-    return {
-      white: game.players[0],
-      black: game.players[1],
-      winner: game.winner,
+// This will construct the appwrite database tournament data from the form data
+// entered by admin on the add-offline-tourn page
+export function CreateAppWriteTourney({
+  games,
+  tournamentName,
+}: {
+  games: GAMES[]
+  tournamentName: string
+}): TOURNAMENT {
+  return {
+    tournamentId: tournamentName,
+    games: games,
+    players: GetTourneyPlayers(games),
+  }
+}
+
+// Creates an array of player usernames of all players that played in a tournament
+export function GetTourneyPlayers(games: GAMES[]): Array<string> {
+  const players = games.reduce<string[]>((acc_players, currentGame) => {
+    if (!acc_players.includes(currentGame.black)) {
+      acc_players.push(currentGame.black)
     }
-  })
-
-  return tournamentTableData
+    if (!acc_players.includes(currentGame.white)) {
+      acc_players.push(currentGame.white)
+    }
+    return acc_players
+  }, [])
+  return players
 }
 
 // This is for creating the tournament tables from the tournaments fetched from appwrite database
 export function CreateTournamentTables(data: APPWRITE_TOURNAMENT) {
   const tournTables = data.documents.map((tourn) => {
-    const tData = CreateTournamentTData(tourn.games)
     return (
       <DataTable
         key={tourn.tournamentId}
@@ -37,7 +50,7 @@ export function CreateTournamentTables(data: APPWRITE_TOURNAMENT) {
           />
         )}
         isLoading={false}
-        data={tData}
+        data={tourn.games}
         columns={[
           {
             accessorKey: 'white',

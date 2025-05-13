@@ -15,7 +15,7 @@ export async function RecordNewTournament(tournamentId: string) {
     //Create tournament game objects according to db schema
     const tournamentGames = CreateTournamentGames(
       lichessTournamentGames,
-      tournamentId,
+      // tournamentId,
     )
     //create tournament object according to db schema
     const tournament: TOURNAMENT = {
@@ -33,15 +33,16 @@ export async function RecordNewTournament(tournamentId: string) {
 //create tournament game objects according to our appwrite database structure
 function CreateTournamentGames(
   tournamentGames: Array<ARENATOURNAMENTGAME>,
-  tournamentId: string,
+  // tournamentId: string,
 ) {
   const tournament = tournamentGames.map((game) => {
     let newgame: GAMES = {
       // tournamentId: tournamentId,
       gameId: game.id,
-      players: [game.players.white.user.id, game.players.black.user.id],
+      black: game.players.black.user.id,
+      white: game.players.white.user.id,
       winner: getWinner(game),
-      date: new Date().toLocaleString(),
+      date: new Date(),
     }
     return newgame
   })

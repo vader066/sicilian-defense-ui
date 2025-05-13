@@ -9,10 +9,12 @@ export interface CLUB {
 
 export interface GAMES {
   gameId: string
-  black: PLAYER
-  white: PLAYER
-  winner: PLAYER
-  date: string
+  black: string
+  white: string
+  winner: string
+  blackRating?: number
+  whiteRating?: number
+  date: Date
   tournaments?: string
 }
 
@@ -56,13 +58,13 @@ export interface APPWRITE_PLAYERS {
   documents: PLAYER[]
 }
 
-export interface TTableData {
-  white: string
-  black: string
-  winner: string
-}
+// export interface TTableData {
+//   white: string
+//   black: string
+//   winner: string
+// }
 
-export interface GAME_TABLE_FORM {
-  id: string
-  value: TTableData
-}
+// export interface GAME_TABLE_FORM {
+//   id: string
+//   value: TTableData
+// }
