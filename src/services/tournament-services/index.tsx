@@ -5,9 +5,12 @@ import {
   type GAMES,
   type TOURNAMENT,
 } from '@/types/database/models'
+import { getPlayerName } from '../player-services'
+import { usePlayerData } from '@/contexts/players-context'
 
 // This will construct the appwrite database tournament data from the form data
 // entered by admin on the add-offline-tourn page
+
 export function CreateAppWriteTourney({
   games,
   tournamentName,
@@ -38,6 +41,7 @@ export function GetTourneyPlayers(games: GAMES[]): Array<string> {
 
 // This is for creating the tournament tables from the tournaments fetched from appwrite database
 export function CreateTournamentTables(data: APPWRITE_TOURNAMENT) {
+  const { players } = usePlayerData()
   const tournTables = data.documents.map((tourn) => {
     return (
       <DataTable
@@ -55,14 +59,26 @@ export function CreateTournamentTables(data: APPWRITE_TOURNAMENT) {
           {
             accessorKey: 'white',
             header: 'White',
+            cell: (row) => {
+              const username = row.getValue() as string
+              return getPlayerName(username, players)
+            },
           },
           {
             accessorKey: 'black',
             header: 'Black',
+            cell: (row) => {
+              const username = row.getValue() as string
+              return getPlayerName(username, players)
+            },
           },
           {
             accessorKey: 'winner',
             header: 'Winner',
+            cell: (row) => {
+              const username = row.getValue() as string
+              return getPlayerName(username, players)
+            },
           },
         ]}
       />

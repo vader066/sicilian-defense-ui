@@ -19,6 +19,7 @@ export interface GAMES {
 }
 
 export interface TOURNAMENT {
+  docId?: string // Hyphenated tournament ID value
   tournamentId: string
   games: Array<GAMES>
   players: Array<string>
