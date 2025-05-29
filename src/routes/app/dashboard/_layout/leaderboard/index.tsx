@@ -3,8 +3,6 @@ import DataTable from '@/components/data-table'
 import { Toolbar } from '@/components/data-table/players-toolbar'
 import { usePlayerData } from '@/contexts/players-context'
 import { BiErrorAlt } from 'react-icons/bi'
-// import { type PLAYER } from "@/types/database/models";
-// import { type Table } from "@tanstack/react-table";
 
 export const Route = createFileRoute('/app/dashboard/_layout/leaderboard/')({
   component: Leaderboard,

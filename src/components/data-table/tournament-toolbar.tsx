@@ -1,12 +1,11 @@
 import { cn } from '@/lib/utils'
 import { Spinner } from '../ui/spinner'
 import { ratingPointsEval } from '@/services/tournament-services/tourney-rating'
-import { type GAMES } from '@/types/database/models'
+import { type GAMES, type PLAYER } from '@/types/database/models'
 import { useState } from 'react'
 import { type Table } from '@tanstack/react-table'
 import { BiSearch } from 'react-icons/bi'
 import { localFetch } from '@/services/fetch'
-import { usePlayerData } from '@/contexts/players-context'
 import { toast } from '../toast'
 
 // This toolbar for tournament tables performs calculations and updates the tournament synced state on the database
@@ -14,10 +13,12 @@ export function Toolbar({
   table,
   tournamentId,
   isSynced,
+  players,
 }: {
   table: Table<GAMES>
   tournamentId: string
   isSynced: boolean
+  players: PLAYER[]
 }) {
   const [isSyncing, setIsSyncing] = useState(false)
   const [isRated, setIsRated] = useState(isSynced)
@@ -37,7 +38,6 @@ export function Toolbar({
         })
     })
   }
-  const { players } = usePlayerData()
 
   // calculate ratingUpdates
   async function syncRatings(tData: GAMES[]) {
@@ -48,6 +48,8 @@ export function Toolbar({
     })
     try {
       console.log(tournamentId)
+      // console.log('Updated games', updatedGames)
+      // console.log('Rating updates', ratingUpdates)
       const response = await localFetch(`/sync-tournament/${tournamentId}`, {
         method: 'PATCH',
         body: JSON.stringify({
@@ -57,12 +59,12 @@ export function Toolbar({
       })
 
       console.log(response)
-      setIsRated(true)
       toast({
         title: 'Tournament synced successfully',
         description: 'Tournament has been synced successfully',
         variant: 'success',
       })
+      setIsRated(true)
     } catch (error) {
       console.log(error)
     } finally {
