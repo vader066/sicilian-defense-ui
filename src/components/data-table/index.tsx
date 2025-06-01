@@ -34,6 +34,9 @@ interface DataTableProps<TData, TValue> {
     documentId?: string
     isSynced?: boolean
   }>
+  DataTableHeader?: React.ComponentType<{
+    table: TableType<TData>
+  }>
   title?: string
   onTableDataClick?: (data: TData) => void
   isLoading: boolean
@@ -47,6 +50,7 @@ export default function DataTable<TData, TValue>({
   columns,
   data,
   DataTableToolbar,
+  DataTableHeader,
   title,
   onTableDataClick,
   isLoading = true,
@@ -80,12 +84,13 @@ export default function DataTable<TData, TValue>({
   })
 
   return (
-    <div className="flex h-full w-full flex-col gap-5">
+    <div className="flex h-full w-full flex-col">
       {DataTableToolbar && (
         <div className="flex items-center">
           <DataTableToolbar title={title || ''} table={table} />
         </div>
       )}
+      {DataTableHeader && <DataTableHeader table={table} />}
       <div
         className={cn(
           'flex w-full flex-col overflow-hidden rounded-md border bg-white dark:bg-transparent',

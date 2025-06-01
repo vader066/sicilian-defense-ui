@@ -26,7 +26,7 @@ function DashboardLayout() {
     <div>
       <SideBar />
       <PlayerDataProvider>
-        <main className="ml-20 p-3 pt-10">
+        <main className="ml-20 p-3 pt-10 bg-gradient-to-br from-slate-50 to-slate-100">
           <Outlet />
         </main>
       </PlayerDataProvider>

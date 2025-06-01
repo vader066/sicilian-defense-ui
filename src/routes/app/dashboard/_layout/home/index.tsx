@@ -6,7 +6,7 @@ export const Route = createFileRoute('/app/dashboard/_layout/home/')({
 
 function Home() {
   return (
-    <div className="flex h-dvh w-full items-center justify-center">
+    <div className="flex h-dvh w-full items-center justify-center bg-red-500">
       <div className="flex gap-4">
         <Link
           to="/app/dashboard/home/add-offline-tourn"
