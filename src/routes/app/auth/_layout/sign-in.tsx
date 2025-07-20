@@ -1,12 +1,12 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { account } from '@/services/appwrite-client/config'
 import { OAuthProvider } from 'appwrite'
-import { env } from '@/env'
+// import { env } from '@/env'
 
 export const Route = createFileRoute('/app/auth/_layout/sign-in')({
   component: SignIn,
 })
-const frontendURL = env.VITE_FRONTEND_URL
+// const frontendURL = env.VITE_FRONTEND_URL
 function SignIn() {
   const handleClick = async () => {
     account.createOAuth2Session(
