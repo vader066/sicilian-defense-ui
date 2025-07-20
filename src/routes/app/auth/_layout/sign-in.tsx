@@ -1,17 +1,18 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { account } from '@/services/appwrite-client/config'
 import { OAuthProvider } from 'appwrite'
+import { env } from '@/env'
 
 export const Route = createFileRoute('/app/auth/_layout/sign-in')({
   component: SignIn,
 })
-
+const frontendURL = env.VITE_FRONTEND_URL
 function SignIn() {
   const handleClick = async () => {
     account.createOAuth2Session(
       OAuthProvider.Google,
-      'http://localhost:3000/app/dashboard/home',
-      'http://localhost:3000/app/auth/sign-in',
+      `${frontendURL}/app/dashboard/home`,
+      `${frontendURL}/app/auth/sign-in`,
     )
   }
   return (
