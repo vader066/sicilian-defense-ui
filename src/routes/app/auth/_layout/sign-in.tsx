@@ -11,8 +11,10 @@ function SignIn() {
   const handleClick = async () => {
     account.createOAuth2Session(
       OAuthProvider.Google,
-      `${frontendURL}/app/dashboard/home`,
-      `${frontendURL}/app/auth/sign-in`,
+      `https://testing-someting.com/app/dashboard/home`,
+      `https://testing-someting.com/app/auth/sign-in`,
+      // `${frontendURL}/app/dashboard/home`,
+      // `${frontendURL}/app/auth/sign-in`,
     )
   }
   return (
