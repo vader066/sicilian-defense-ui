@@ -6,15 +6,13 @@ import { OAuthProvider } from 'appwrite'
 export const Route = createFileRoute('/app/auth/_layout/sign-in')({
   component: SignIn,
 })
-// const frontendURL = env.VITE_FRONTEND_URL
+const frontendURL = env.VITE_FRONTEND_URL
 function SignIn() {
   const handleClick = async () => {
     account.createOAuth2Session(
       OAuthProvider.Google,
-      `https://testing-someting.com/app/dashboard/home`,
-      `https://testing-someting.com/app/auth/sign-in`,
-      // `${frontendURL}/app/dashboard/home`,
-      // `${frontendURL}/app/auth/sign-in`,
+      `${frontendURL}/app/dashboard/home`,
+      `${frontendURL}/app/auth/sign-in`,
     )
   }
   return (
