@@ -9,7 +9,6 @@ import { getPlayerName } from '../player-services'
 import { usePlayerData } from '@/contexts/players-context'
 import { PiWarningDiamond } from 'react-icons/pi'
 import { Badge } from '@/components/ui/badge'
-import { DataTableHeader } from '@/components/data-table/data-table-header'
 // This will construct the appwrite database tournament data from the form data
 // entered by admin on the add-offline-tourn page
 
@@ -63,16 +62,8 @@ export function CreateTournamentTables(data: APPWRITE_TOURNAMENT) {
         key={tourn.tournamentId}
         TheadClassName="!text-start font-semibold text-slate-700"
         TcellClassName="py-4! border-b border-slate-100 font-semibold text-slate-800"
-        DataTableHeader={() => (
-          <DataTableHeader tourney={tourn} isSynced={tourn.synced as boolean} />
-        )}
         DataTableToolbar={(props) => (
-          <Toolbar
-            {...props}
-            players={players}
-            tournamentId={tourn.tournamentId as string}
-            isSynced={tourn.synced as boolean}
-          />
+          <Toolbar {...props} players={players} tourney={tourn} />
         )}
         isLoading={isLoading}
         data={tourn.games}
