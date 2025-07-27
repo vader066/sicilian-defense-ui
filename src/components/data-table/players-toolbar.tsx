@@ -21,7 +21,7 @@ export function Toolbar({ table }: { table: Table<PLAYER> }) {
 
   return (
     <div>
-      <label className="flex items-center text-black/70 gap-2 rounded-md p-2 border border-black/50">
+      <label className="flex items-center text-black/70 gap-2 rounded-md mb-5 p-2 border border-black/50">
         <span>
           <BiSearch />
         </span>
