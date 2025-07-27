@@ -25,7 +25,7 @@ export function TournamentTable({
       data={tournament.games}
       TheadClassName="!text-start font-semibold text-slate-700"
       TcellClassName="py-4! border-b border-slate-100 font-semibold text-slate-800"
-      DataTableHeader={() => {
+      DataTableToolbar={() => {
         return (
           <div className="w-full py-6 px-6 flex gap-3 flex-col bg-gradient-to-r from-slate-800 to-slate-700 text-white rounded-t-lg">
             <div className="w-full flex items-center justify-between">
