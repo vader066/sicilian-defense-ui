@@ -35,6 +35,7 @@ function CreateTournamentGames(
   tournamentGames: Array<ARENATOURNAMENTGAME>,
   // tournamentId: string,
 ) {
+  // need to update this to include draws and forfeits but lichess api doesn't seem to provide draw/forfeit info - investigate
   const tournament = tournamentGames.map((game) => {
     let newgame: GAMES = {
       // tournamentId: tournamentId,
