@@ -89,7 +89,21 @@ function getKFactor(rating: number): 10 | 20 | 40 {
 function blackPoints(duel: GAMES): number {
   const expectedScore = blackExpectedScore(duel)
   const kFactor = getKFactor(duel.blackRating!)
-  const score: 1 | 0 = duel.winner === duel.black ? 1 : 0
+
+  // determine score based on game result: draw, win, forfeit
+  let score: 1 | 0 | 0.5
+  if (duel.draw) {
+    score = 0.5
+  } else if (duel.forfeit === 'BF' || duel.forfeit === 'FF') {
+    // If black forfeited or both forfeited, black gets 0 points
+    score = 0
+  } else if (duel.winner === duel.black) {
+    score = 1
+  } else {
+    throw new Error(
+      `Game result is invalid or missing for gameId: ${duel.gameId}`,
+    )
+  }
   const ratingPoints = kFactor * (score - expectedScore)
   // console.log(ratingPoints);
   return ratingPoints
@@ -99,7 +113,20 @@ function whitePoints(duel: GAMES): number {
   const expectedScore = whiteExpectedScore(duel)
   const kFactor = getKFactor(duel.whiteRating!)
   // console.log(kFactor)
-  const score: 1 | 0 = duel.winner === duel.white ? 1 : 0
+  // determine score based on game result: draw, win, forfeit
+  let score: 1 | 0 | 0.5
+  if (duel.draw) {
+    score = 0.5
+  } else if (duel.forfeit === 'WF' || duel.forfeit === 'FF') {
+    // If white forfeited or both forfeited, white gets 0 points
+    score = 0
+  } else if (duel.winner === duel.white) {
+    score = 1
+  } else {
+    throw new Error(
+      `Game result is invalid or missing for gameId: ${duel.gameId}`,
+    )
+  }
   const ratingPoints = kFactor * (score - expectedScore)
   // console.log(ratingPoints)
   return ratingPoints
