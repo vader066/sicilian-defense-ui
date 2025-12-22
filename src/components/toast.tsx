@@ -49,7 +49,7 @@ export const Toast = ({ title, description, variant }: toastProps) => {
             {variant == 'warning' && <Warning />}
           </div>
           <div className="flex-1 ">
-            <h3 className="text-lg font-semibold text-white">{title}</h3>
+            <h3 className="text-lg font-semibold text-white mr-5">{title}</h3>
             <p className="text-[#a3c9c0] text-wrap text-sm">{description}</p>
           </div>
         </div>

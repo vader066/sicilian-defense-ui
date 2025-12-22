@@ -2,7 +2,6 @@ import {
   AuthError,
   type LoginCredentials,
   type LoginResponse,
-  type User,
   type USERDATA,
 } from '@/types/auth'
 import api from './api-client'
@@ -28,8 +27,11 @@ export const AuthService = {
       localStorage.setItem('user_data', JSON.stringify(user))
 
       return response.data.data
-    } catch (error) {
-      throw new AuthError('Login failed', 401, error)
+    } catch (error: any) {
+      const serverMessage =
+        error.response?.data?.message ?? error.message ?? 'Login failed'
+      const serverStatus = error.response?.status ?? 500
+      throw new AuthError(serverMessage, serverStatus, error)
     }
   },
 
@@ -51,7 +53,10 @@ export const AuthService = {
     localStorage.removeItem('access_token')
     localStorage.removeItem('user')
     api.post('/admin/logout').catch((error) => {
-      throw new AuthError('Logout failed', 500, error)
+      const serverMessage =
+        error.response?.data?.message ?? error.message ?? 'Logout failed'
+      const serverStatus = error.response?.status ?? 500
+      throw new AuthError(serverMessage, serverStatus, error)
     })
   },
 

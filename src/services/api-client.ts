@@ -34,7 +34,7 @@ function stripQuery(url: string) {
 }
 
 function setupApiInterceptors(apiInstance: AxiosInstance = api) {
-  const publicEndpoints = ['/auth/login', '/auth/logout', '/auth/refresh']
+  const publicEndpoints = ['/admin/login', '/admin/logout', '/admin/refresh']
   /*
    * Request interceptor to add auth token to headers for protected endpoints
    */
@@ -61,6 +61,12 @@ function setupApiInterceptors(apiInstance: AxiosInstance = api) {
     (response: AxiosResponse) => response,
     async (error: AxiosError) => {
       const orignalRequest = error.config as InternalAxiosRequestConfig
+      const path = stripQuery(orignalRequest.url ?? '')
+      const isPublicEndpoint = publicEndpoints.includes(path)
+      if (isPublicEndpoint) {
+        return Promise.reject(error)
+      }
+
       if (
         !error.response ||
         error.response.status !== 401 ||

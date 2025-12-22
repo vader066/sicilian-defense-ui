@@ -8,9 +8,9 @@ interface AuthContextProps {
   club: Club | null
   isLoading: boolean
   error: AuthError | null
-  logout: () => void
+  logout: () => Promise<void>
   refreshAuth: () => Promise<string | null>
-  login: (username: string, password: string) => void
+  login: (email: string, password: string) => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined)
@@ -52,7 +52,10 @@ export function AuthProvider({ children }: { children?: React.ReactNode }) {
 
   useEffect(() => {
     const token = AuthService.getToken()
-    if (!token) return
+    if (!token) {
+      setIsLoading(false)
+      return
+    }
     getCurrentUser()
   }, [])
 
@@ -69,6 +72,8 @@ export function AuthProvider({ children }: { children?: React.ReactNode }) {
         setError(new AuthError('Failed to get user data', 500, error))
       }
       return null
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -82,21 +87,21 @@ export function AuthProvider({ children }: { children?: React.ReactNode }) {
     }
   }
 
-  const login = async (username: string, password: string) => {
+  const login = async (email: string, password: string): Promise<void> => {
     try {
       setIsLoading(true)
       setError(null)
-      const response = await AuthService.login({ username, password })
+      const response = await AuthService.login({ email, password })
       setUser(response.user)
       setAuthToken(AuthService.getToken())
-    } catch (error) {
+    } catch (error: any) {
       if (error instanceof AuthError) {
         setError(error)
         throw error
       } else {
         const authError = new AuthError(
-          error instanceof Error ? error.message : 'Login failed',
-          500,
+          error.message ?? 'Login failed',
+          error.status || 500,
           error,
         )
         setError(authError)
@@ -107,7 +112,7 @@ export function AuthProvider({ children }: { children?: React.ReactNode }) {
     }
   }
 
-  const logout = async () => {
+  const logout = async (): Promise<void> => {
     try {
       setError(null)
       setIsLoading(true)

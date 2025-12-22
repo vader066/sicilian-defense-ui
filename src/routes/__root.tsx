@@ -5,9 +5,11 @@ import TanstackQueryLayout from '../integrations/tanstack-query/layout'
 
 import type { QueryClient } from '@tanstack/react-query'
 import { Toaster } from 'sonner'
+import type { User } from '@/types/auth'
 
 interface MyRouterContext {
   queryClient: QueryClient
+  user: User | null
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({

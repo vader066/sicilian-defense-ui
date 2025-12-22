@@ -1,27 +1,17 @@
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
 import SideBar from '@/components/sidebar'
 import { PlayerDataProvider } from '@/contexts/players-context'
-import { useAuth } from '@/hooks/auth'
-import { Spinner } from '@/components/ui/spinner'
 
 export const Route = createFileRoute('/app/dashboard/_layout')({
+  beforeLoad: async ({ context }) => {
+    if (!context.user) {
+      throw redirect({ to: '/app/auth/sign-in' })
+    }
+  },
   component: DashboardLayout,
 })
 
 function DashboardLayout() {
-  const { user, loading } = useAuth()
-  if (loading) {
-    return (
-      <div className="h-dvh w-screen flex items-center justify-center">
-        <Spinner />
-      </div>
-    )
-  }
-
-  if (!user) {
-    redirect({ to: '/app/auth/sign-in' })
-  }
-
   return (
     <div>
       <SideBar />
