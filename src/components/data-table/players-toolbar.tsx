@@ -1,4 +1,4 @@
-import { type PLAYER } from '@/types/database/models'
+import type { PLAYER } from '@/types/players'
 import { type Table } from '@tanstack/react-table'
 import { useEffect } from 'react'
 import { BiSearch } from 'react-icons/bi'

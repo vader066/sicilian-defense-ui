@@ -14,6 +14,7 @@ type Tabs = 'add-member' | 'existing-member'
 
 function ManageUsers() {
   const [page, setPage] = useState<Tabs>('add-member')
+  const { user } = Route.useRouteContext()
 
   return (
     <div className="flex flex-col gap-6 items-center justify-center w-full px-10">
@@ -53,10 +54,12 @@ function ManageUsers() {
         <div className="w-full border border-black/20 min-h-[500px] rounded-lg flex items-start py-6 justify-center">
           {page === 'add-member' && (
             <div className="lg:w-[50%] md:w-[70%] w-[90%] ">
-              <AddMember />
+              <AddMember clubId={user.club_id} />
             </div>
           )}
-          {page === 'existing-member' && <ExistingMember />}
+          {page === 'existing-member' && (
+            <ExistingMember clubId={user.club_id} />
+          )}
         </div>
       </section>
     </div>

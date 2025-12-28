@@ -3,9 +3,19 @@ export type LoginCredentials = {
   password: string
 }
 
-export type User = {
-  // complete this later
-  id: number
+export interface User extends ADMIN {}
+
+export interface ADMIN {
+  id: string
+  first_name: string
+  last_name: string
+  email: string
+  club_id: string
+  admin_name?: string
+  username: string
+  creator: boolean
+  created_at?: string
+  updated_at?: string
 }
 
 export type Club = {

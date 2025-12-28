@@ -1,8 +1,14 @@
 import { DialogContent, DialogTitle } from '@/components/ui/dialog'
 import { AddMember } from './add-member'
-import type { PLAYER } from '@/types/database/models'
+import type { PLAYER } from '@/types/players'
 
-export function EditPlayerInfo({ player }: { player: PLAYER }) {
+export function EditPlayerInfo({
+  player,
+  clubId,
+}: {
+  player: PLAYER
+  clubId: string
+}) {
   return (
     <DialogContent className="fixed left-1/2 top-[10%] w-[95vw] max-w-[500px] -translate-x-1/2 rounded-md border-none sm:w-[80vw] md:w-[60vw] lg:w-[700px] bg-green-400">
       <div
@@ -18,7 +24,7 @@ export function EditPlayerInfo({ player }: { player: PLAYER }) {
           {'Update Player Information'}
         </DialogTitle>
         {/* <div className="w-full h-56"></div> */}
-        <AddMember player={player} />
+        <AddMember clubId={clubId} player={player} />
       </div>
     </DialogContent>
   )

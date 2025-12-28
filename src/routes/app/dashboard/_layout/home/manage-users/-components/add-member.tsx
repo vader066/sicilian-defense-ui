@@ -1,4 +1,3 @@
-import { toast } from '@/components/toast'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
 import { DialogClose, DialogFooter } from '@/components/ui/dialog'
@@ -15,84 +14,65 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Spinner } from '@/components/ui/spinner'
+import { useAddPlayer, useUpdatePlayer } from '@/hooks/players'
 import { cn } from '@/lib/utils'
-import { localFetch } from '@/services/fetch'
-import type { PLAYER, sex } from '@/types/database/models'
+import type { PLAYER } from '@/types/players'
 import { format } from 'date-fns'
 import { CalendarIcon } from 'lucide-react'
 import { type FormEvent, useEffect, useState } from 'react'
 import { FaChessKing, FaChessQueen } from 'react-icons/fa'
 
-export function AddMember({ player }: { player?: PLAYER }) {
-  const [isLoading, setIsLoading] = useState(false)
+export function AddMember({
+  player,
+  clubId,
+}: {
+  player?: PLAYER
+  clubId: string
+}) {
   const [edit, setEdit] = useState(false)
   const [form, setForm] = useState<PLAYER>({
+    id: '',
     first_name: '',
     last_name: '',
     programme: '',
     username: '',
-    dob: new Date(),
+    date_of_birth: new Date().toLocaleDateString(),
     rating: 1400,
-    sex: undefined,
-    club: 'KNUST CHESS CLUB',
+    sex: 'FEMALE',
+    club_id: clubId,
   })
+  const { mutate: updatePlayer, isPending: isUpdating } =
+    useUpdatePlayer(clubId)
+  const { mutate: addPlayer, isPending: isAdding } = useAddPlayer(clubId)
 
   // This component is also used to edit an existing member's info when a player object is passed
   useEffect(() => {
     if (player) {
-      setForm({ ...player, dob: new Date(player.dob) })
+      setForm({
+        ...player,
+        date_of_birth: new Date(player.date_of_birth).toLocaleDateString(),
+      })
     }
   }, [])
 
-  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setIsLoading(true)
-    try {
-      if (player) {
-        const playerData: PLAYER = {
-          first_name: form.first_name,
-          last_name: form.last_name,
-          programme: form.programme,
-          username: form.username,
-          dob: form.dob,
-          rating: form.rating,
-          sex: form.sex,
-          club: form.club,
-        }
-        console.log(playerData)
-        // if player object is passed use the update player endpoint instead
-        const response = await localFetch(`/players/${player.username}`, {
-          method: 'PUT',
-          body: JSON.stringify(playerData),
-        })
-        toast({
-          title: 'Updated Successfully',
-          description: 'The player was successfully updated',
-          variant: 'success',
-        })
-        console.log(response)
-      } else {
-        const response = await localFetch('/players', {
-          method: 'POST',
-          body: JSON.stringify(form),
-        })
-        console.log(response)
-
-        toast({
-          title: 'Created Successfully',
-          description: 'The player was successfully added to the database',
-          variant: 'success',
-        })
+    if (player) {
+      const playerData: PLAYER = {
+        id: player.id,
+        first_name: form.first_name,
+        last_name: form.last_name,
+        programme: form.programme,
+        username: form.username,
+        date_of_birth: form.date_of_birth,
+        rating: form.rating,
+        sex: form.sex,
+        club_id: player.club_id,
       }
-    } catch (error: any) {
-      console.log(error.message)
-      toast({
-        title: 'Error Occurred',
-        description: error.message,
-        variant: 'error',
-      })
-    } finally {
-      setIsLoading(false)
+      // console.log(playerData)
+      updatePlayer({ playerId: player.id, playerData })
+    } else {
+      addPlayer(form)
     }
   }
 
@@ -166,7 +146,9 @@ export function AddMember({ player }: { player?: PLAYER }) {
             <label htmlFor="sex">Sex</label>
             <Select
               value={form.sex}
-              onValueChange={(value) => setForm({ ...form, sex: value as sex })}
+              onValueChange={(value) =>
+                setForm({ ...form, sex: (value as 'MALE') || 'FEMALE' })
+              }
             >
               <SelectTrigger className="border flex border-black/20 rounded-md p-2">
                 <SelectValue
@@ -176,10 +158,10 @@ export function AddMember({ player }: { player?: PLAYER }) {
                 >
                   <div className="flex gap-3 items-center">
                     <span className="capitalize">{form.sex}</span>
-                    {form.sex === 'female' && (
+                    {form.sex === 'FEMALE' && (
                       <FaChessQueen className="text-green-500" />
                     )}
-                    {form.sex === 'male' && (
+                    {form.sex === 'MALE' && (
                       <FaChessKing className="text-green-500" />
                     )}
                   </div>
@@ -200,19 +182,24 @@ export function AddMember({ player }: { player?: PLAYER }) {
                 variant={'outline'}
                 className={cn(
                   'w-full pl-3 h-11 text-left font-normal',
-                  !form.dob && 'text-muted-foreground',
+                  !form.date_of_birth && 'text-muted-foreground',
                 )}
               >
-                {form.dob ? format(form.dob, 'PPP') : <span>Pick a date</span>}
+                {form.date_of_birth ? (
+                  format(form.date_of_birth, 'PPP')
+                ) : (
+                  <span>Pick a date</span>
+                )}
                 <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0" align="start">
               <Calendar
                 mode="single"
-                selected={form.dob}
+                selected={new Date(form.date_of_birth)}
                 onSelect={(e) => {
-                  setForm({ ...form, dob: e as Date })
+                  const date = format(e!, 'PPP')
+                  setForm({ ...form, date_of_birth: date })
                 }}
                 disabled={(date) =>
                   date > new Date() || date < new Date('1900-01-01')
@@ -269,24 +256,24 @@ export function AddMember({ player }: { player?: PLAYER }) {
             </DialogClose>
             <Button
               type="submit"
-              disabled={isLoading}
+              disabled={isUpdating}
               className="bg-primary text-white"
             >
-              {isLoading ? <Spinner /> : 'Submit'}
+              {isUpdating ? <Spinner /> : 'Submit'}
             </Button>
           </DialogFooter>
         ) : (
           <button
-            disabled={isLoading}
+            disabled={isAdding}
             type="submit"
             className={cn(
               'bg-black text-white p-3 px-20 mt-10 rounded-lg w-fit',
               {
-                'opacity-30': isLoading,
+                'opacity-30': isAdding,
               },
             )}
           >
-            {isLoading ? <Spinner /> : 'Add Member'}
+            {isAdding ? <Spinner /> : 'Add Member'}
           </button>
         )}
       </section>
