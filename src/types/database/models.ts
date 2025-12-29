@@ -1,3 +1,5 @@
+import type { GAME } from '../games'
+
 export interface CLUB {
   id: string
   name: string
@@ -7,23 +9,10 @@ export interface CLUB {
   tournaments: Array<TOURNAMENT>
 }
 
-export interface GAMES {
-  gameId: string
-  black: string
-  white: string
-  winner?: string
-  blackRating?: number //Black Players Rating going into the game
-  whiteRating?: number //White Players Rating going into the game
-  date: Date
-  tournaments?: string
-  draw?: boolean
-  forfeit?: 'BF' | 'WF' | 'FF' // Black Forfeit, White Forfeit, Full(Both players) Forfeit
-}
-
 export interface TOURNAMENT {
   docId?: string // Hyphenated tournament ID value
   tournamentId: string
-  games: Array<GAMES>
+  games: Array<GAME>
   players: Array<string>
   synced?: boolean
   club?: string

@@ -12,13 +12,12 @@ import { v4 as uuidv4 } from 'uuid'
 import { BiSave } from 'react-icons/bi'
 import { BsPlusCircleDotted } from 'react-icons/bs'
 import { FaTimesCircle } from 'react-icons/fa'
-import { type GAMES } from '@/types/database/models'
-import { CreateAppWriteTourney } from '@/services/tournament-services/index'
 import { Spinner } from '@/components/ui/spinner'
-import { usePlayerData } from '@/contexts/players-context'
 import { RiErrorWarningFill } from 'react-icons/ri'
-import { localFetch } from '@/services/fetch'
-import { toast } from '@/components/toast'
+import { tournamentServices } from '@/services/tournament-services'
+import { usePlayers } from '@/hooks/players'
+import { useAddTournament } from '@/hooks/tournaments'
+import type { GAME } from '@/types/games'
 // import { players } from '@/store/player-data'
 
 export const Route = createFileRoute(
@@ -28,61 +27,70 @@ export const Route = createFileRoute(
 })
 
 export type GameResultEntry = {
-  gameId: string
-  black: string
-  white: string
+  game_id: string
+  black: string // black player ID
+  black_rating: number // rating of black when game was played
+  white: string // white player ID
+  white_rating: number // rating of white when game was  played
   result: 'black' | 'white' | 'draw' | 'WF' | 'BF' | 'FF'
-  date: Date
+  played_at: string
 }
 
 function DynamicForm() {
   //hooks
-  const { players, isLoading, error } = usePlayerData()
-  const [isSaving, setIsSaving] = useState(false)
+  const { user } = Route.useRouteContext()
+  const {
+    data: players,
+    isPending: isLoading,
+    error,
+  } = usePlayers(user.club_id)
+  const { mutate: addTournament, isPending: isSaving } = useAddTournament(
+    user.club_id,
+  )
+
   const [canRemove, setCanRemove] = useState(false)
   const [fields, setFields] = useState<Array<GameResultEntry>>([])
   const [tournamentName, setTournamentName] = useState('')
-  const [games, setGames] = useState<GAMES[]>([])
-
-  const getPlayerName = (username: string): string => {
-    const player = players.find((p) => p.username === username)
-    return `${player?.first_name ?? 'N/A'} ${player?.last_name ?? ''}`
-  }
+  const [games, setGames] = useState<GAME[]>([])
 
   //Initialization before render because selects can't be empty
   useEffect(() => {
     if (players && players.length > 0) {
+      const placeholderBlack = players[0]
+      const placeholderWhite = players[2]
       setFields([
         {
-          gameId: uuidv4().slice(0, 19),
-          white: players[0].username,
-          black: players[2].username,
+          game_id: uuidv4(),
+          white: placeholderWhite.id,
+          white_rating: placeholderWhite.rating,
+          black: placeholderBlack.id,
+          black_rating: placeholderBlack.rating,
           result: 'black',
-          date: new Date(),
+          played_at: new Date().toISOString(),
         },
       ])
     }
   }, [players])
 
   useEffect(() => {
-    const games: GAMES[] = fields.map((gameRes) => {
-      let gameBase: GAMES = {
-        gameId: gameRes.gameId,
-        white: gameRes.white,
-        black: gameRes.black,
-        date: gameRes.date,
+    const games: GAME[] = fields.map((gameRes) => {
+      const { result, ...game } = gameRes
+
+      let gameBase: GAME = {
+        ...game,
+        draw: false, // draw is fault by default
       }
-      if (gameRes.result === 'white') {
+      if (result === 'white') {
         gameBase.winner = gameRes.white
-      } else if (gameRes.result === 'black') {
+      } else if (result === 'black') {
         gameBase.winner = gameRes.black
-      } else if (gameRes.result === 'BF') {
+      } else if (result === 'BF') {
         gameBase.forfeit = 'BF'
-      } else if (gameRes.result === 'WF') {
+      } else if (result === 'WF') {
         gameBase.forfeit = 'WF'
-      } else if (gameRes.result === 'FF') {
+      } else if (result === 'FF') {
         gameBase.forfeit = 'FF'
-      } else if (gameRes.result === 'draw') {
+      } else if (result === 'draw') {
         gameBase.draw = true
       }
 
@@ -92,7 +100,7 @@ function DynamicForm() {
     setGames(games)
   }, [fields])
 
-  if (isLoading && fields.length == 0) {
+  if (isLoading || fields.length == 0) {
     return (
       <div className="flex items-center justify-center">
         <Spinner />
@@ -108,15 +116,29 @@ function DynamicForm() {
     )
   }
 
+  const getPlayerName = (id: string): string => {
+    const player = players!.find((p) => p.id === id)
+    return `${player?.first_name ?? 'N/A'} ${player?.last_name ?? ''}`
+  }
+
+  const getUsername = (id: string): string => {
+    const player = players!.find((p) => p.id === id)
+    return player?.username || 'N/A'
+  }
+
   const handleAddField = () => {
+    const placeholderBlack = players[0]
+    const placeholderWhite = players[2]
     setFields([
       ...fields,
       {
-        gameId: uuidv4().slice(0, 19),
-        white: players[0].username,
-        black: players[2].username,
+        game_id: uuidv4(),
+        white: placeholderWhite.id,
+        white_rating: placeholderWhite.rating,
+        black: placeholderBlack.id,
+        black_rating: placeholderBlack.rating,
         result: 'black',
-        date: new Date(),
+        played_at: new Date().toISOString(),
       },
     ])
     setCanRemove(true)
@@ -150,35 +172,12 @@ function DynamicForm() {
 
   const handleSubmit = async (event: React.ChangeEvent<HTMLInputElement>) => {
     event.preventDefault()
-    setIsSaving(true)
     console.log('Submitted Fields:', fields)
-    const payload = CreateAppWriteTourney({
+    const payload = tournamentServices.createDBTourneyReq({
       games: games,
       tournamentName: tournamentName,
     })
-    try {
-      const response = await localFetch('/tournaments', {
-        method: 'POST',
-        body: JSON.stringify({ tournament: payload }),
-      })
-      if (response.status !== 201) {
-        throw new Error('Could not create tournament')
-      }
-      toast({
-        title: 'Created successfully',
-        description: 'The tournament was created successfully',
-        variant: 'success',
-      })
-    } catch (error) {
-      console.error(error)
-      toast({
-        title: 'Could not create',
-        description: 'The tournament could not be created',
-        variant: 'error',
-      })
-    } finally {
-      setIsSaving(false)
-    }
+    addTournament(payload)
   }
 
   return (
@@ -202,7 +201,7 @@ function DynamicForm() {
         />
       </div>
       {fields.map((field, index) => (
-        <div className="flex gap-3" key={field.gameId}>
+        <div className="flex gap-3" key={field.game_id}>
           <Select
             name="white"
             value={field.white}
@@ -211,12 +210,12 @@ function DynamicForm() {
             }}
           >
             <SelectTrigger className="h-8 w-fit bg-white py-5">
-              <SelectValue placeholder={field.white} />
+              <SelectValue placeholder={getUsername(field.white)} />
             </SelectTrigger>
             <SelectContent side="bottom">
               {players.map((player, idx) => {
                 return (
-                  <SelectItem key={idx} value={player.username}>
+                  <SelectItem key={idx} value={player.id}>
                     <span>{`${player.first_name} ${player.last_name}`}</span>
                   </SelectItem>
                 )
@@ -231,12 +230,12 @@ function DynamicForm() {
             }}
           >
             <SelectTrigger className="h-8 w-fit bg-white py-5">
-              <SelectValue placeholder={field.black} />
+              <SelectValue placeholder={getUsername(field.black)} />
             </SelectTrigger>
             <SelectContent side="bottom">
               {players.map((player, idx) => {
                 return (
-                  <SelectItem key={idx} value={player.username}>
+                  <SelectItem key={idx} value={player.id}>
                     <span>{`${player.first_name} ${player.last_name}`}</span>
                   </SelectItem>
                 )

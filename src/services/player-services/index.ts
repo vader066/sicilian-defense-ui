@@ -3,12 +3,20 @@ import api from '../api-client'
 import type { ApiResponse } from '../types'
 
 export function getPlayerName(
-  username: string,
+  playerId: string,
   players: PLAYER[],
 ): string | null {
-  const player = players.find((player) => username === player.username)
+  const player = players.find((player) => playerId === player.id)
   if (player) {
     return `${player.first_name} ${player.last_name}`
+  }
+  return null
+}
+
+export function getPlayer(playerId: string, players: PLAYER[]): PLAYER | null {
+  const player = players.find((player) => playerId === player.id)
+  if (player) {
+    return player
   }
   return null
 }

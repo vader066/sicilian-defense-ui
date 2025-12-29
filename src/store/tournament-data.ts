@@ -7,16 +7,16 @@
 //       tournamentId: 'DFDFD',
 //       games: [
 //         {
-//           gameId: 'fdfd',
+//           game_id: 'fdfd',
 //           players: ['Humphrey', 'Alexis'],
 //           winner: 'Humphrey',
-//           date: '1/1/2024',
+//           played_at: '1/1/2024',
 //         },
 //         {
-//           gameId: 'hfhfg',
+//           game_id: 'hfhfg',
 //           players: ['Matthew', 'Daniel'],
 //           winner: 'Matthew',
-//           date: '1/1/2024',
+//           played_at: '1/1/2024',
 //         },
 //       ],
 //       players: ['Matthew, Daniel, Humphrey, Alexis'],

@@ -1,43 +1,29 @@
 import { createFileRoute } from '@tanstack/react-router'
 // import { tournamentStore } from "@/store/tournament-data";
-import {
-  type APPWRITE_TOURNAMENT,
-  type TOURNAMENT,
-} from '@/types/database/models'
-import { useEffect, useState } from 'react'
-import { localFetch } from '@/services/fetch'
+import { useState } from 'react'
 import DataTable from '@/components/data-table'
 import { tournamentColumns } from './-components/columns'
 import { TourneyTable } from './-components/tourney-table'
 import { Button } from '@/components/ui/button'
 import { Button as MovingBorderButton } from '@/components/ui/moving-border'
 import { BiArrowBack } from 'react-icons/bi'
+import { useTournaments } from '@/hooks/tournaments'
+import type { DBTourney } from '@/types/tournament'
 
 export const Route = createFileRoute('/app/dashboard/_layout/history/')({
   component: History,
 })
 
 function History() {
-  // const [isError, setIsError] = useState(false)
-  const [tournArray, setTournArray] = useState<APPWRITE_TOURNAMENT | null>(null)
-  const [isFetching, setIsFetching] = useState(true)
-  const [selectedTourn, setSelectedTourn] = useState<TOURNAMENT | null>(null)
+  const { user } = Route.useRouteContext()
+  const [selectedTourn, setSelectedTourn] = useState<DBTourney | null>(null)
 
-  async function fetchTournament() {
-    try {
-      setIsFetching(true)
-      const response = await localFetch<APPWRITE_TOURNAMENT>('/tournaments')
-      setTournArray(response.data)
-    } catch (error: any) {
-      console.error(error.message)
-      // setIsError(true)
-    } finally {
-      setIsFetching(false)
-    }
-  }
-  useEffect(() => {
-    fetchTournament()
-  }, [])
+  const {
+    data: tournaments,
+    isPending: isTournamentLoading,
+    isError: isTournamentError,
+  } = useTournaments(user.club_id)
+
   return selectedTourn ? (
     <div>
       <div className="flex items-center mb-5">
@@ -59,8 +45,8 @@ function History() {
         // DataTableToolbar={(props) => (
         //   <Toolbar {...props} players={players} tourney={tourn} />
         // )}
-        isLoading={isFetching}
-        data={tournArray?.documents || []}
+        isLoading={isTournamentLoading}
+        data={tournaments || []}
         columns={[
           ...tournamentColumns,
           {

@@ -1,16 +1,17 @@
 import { Calendar, UsersIcon } from 'lucide-react'
 import { Button } from '../ui/button'
 import { GetTourneyPlayers } from '@/services/tournament-services'
-import type { GAMES, PLAYER, TOURNAMENT } from '@/types/database/models'
 import { FaSyncAlt } from 'react-icons/fa'
 import type { Table } from '@tanstack/react-table'
 import { useState } from 'react'
-import { toast } from '../toast'
-import { localFetch } from '@/services/fetch'
 import { ratingPointsEval } from '@/services/tournament-services/tourney-rating'
 import { BiSearch } from 'react-icons/bi'
 import { Spinner } from '../ui/spinner'
 import { cn } from '@/lib/utils'
+import type { GAME } from '@/types/games'
+import type { PLAYER } from '@/types/players'
+import type { syncTournReq, TOURNAMENT } from '@/types/tournament'
+import { useSyncTournament } from '@/hooks/tournaments'
 
 export function DataTableHeader({
   players,
@@ -18,12 +19,14 @@ export function DataTableHeader({
   tourney,
   isSynced,
 }: {
-  table: Table<GAMES>
+  table: Table<GAME>
   players: PLAYER[]
   tourney: TOURNAMENT
   isSynced: boolean
 }) {
-  const [isSyncing, setIsSyncing] = useState(false)
+  const { mutate: syncTourney, isPending: isSyncing } = useSyncTournament(
+    tourney.clubId,
+  )
   const [isRated, setIsRated] = useState(isSynced)
   const tData = tourney.games
   console.log(table)
@@ -44,48 +47,32 @@ export function DataTableHeader({
   }
 
   // calculate ratingUpdates
-  async function syncRatings(tData: GAMES[]) {
-    setIsSyncing(true)
+  async function syncRatings(tData: GAME[]) {
     const { updatedGames, ratingUpdates } = ratingPointsEval({
       tourneyGames: tData,
       globPlayers: players,
     })
-    const tournamentId = tourney.tournamentId
-    try {
-      console.log(tournamentId)
-      // console.log('Updated games', updatedGames)
-      // console.log('Rating updates', ratingUpdates)
-      const response = await localFetch(`/sync-tournament/${tournamentId}`, {
-        method: 'PATCH',
-        body: JSON.stringify({
-          games: updatedGames,
-          ratingUpdates: ratingUpdates,
-        }),
-      })
-
-      console.log(response)
-      toast({
-        title: 'Tournament synced successfully',
-        description: 'Tournament has been synced successfully',
-        variant: 'success',
-      })
-      setIsRated(true)
-    } catch (error) {
-      console.log(error)
-    } finally {
-      setIsSyncing(false)
-      console.log(updatedGames)
-      // console.log(ratingUpdates)
+    const tournamentId = tourney.id
+    const payload: syncTournReq = {
+      tournamentId: tournamentId,
+      updatedGames: updatedGames,
+      ratingUpdates: ratingUpdates,
     }
+
+    syncTourney(payload, {
+      onSuccess: () => {
+        setIsRated(true)
+      },
+    })
   }
 
   return (
     <div className="w-full py-6 px-6 flex gap-3 flex-col bg-gradient-to-r from-slate-800 to-slate-700 text-white rounded-t-lg">
       <div className="w-full flex items-center justify-between">
         <h1 className="font-bold text-2xl text-nowrap">
-          {tourney.tournamentId}
+          {tourney.tournamentName}
         </h1>
-        {!isSynced && (
+        {!isRated && (
           <Button
             disabled={isSyncing}
             onClick={() => {

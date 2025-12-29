@@ -1,28 +1,29 @@
-import type { GAMES, PLAYER } from '@/types/database/models'
+import type { GAME } from '@/types/games'
 import { GetTourneyPlayers } from '.'
+import type { PLAYER } from '@/types/players'
 
 // evaluate the new ratings of the players after the tournament results
 export function ratingPointsEval({
   tourneyGames,
   globPlayers,
 }: {
-  tourneyGames: GAMES[]
+  tourneyGames: GAME[]
   globPlayers: PLAYER[]
-}): { ratingUpdates: ratingUpdate[]; updatedGames: GAMES[] } {
-  // Gets the array of usernames of all players who played in the tournament
+}): { ratingUpdates: ratingUpdate[]; updatedGames: GAME[] } {
+  // Gets the array of ID's of all players who played in the tournament
   const playerList = GetTourneyPlayers(tourneyGames)
 
-  //Maps throuarray of username and ratings of players who played the tournament
-  const localTourneyPlayers: ratingUpdate[] = playerList.map((username) => {
-    const player = globPlayers.find((player) => player.username === username)
+  //Maps through array of ID's returns ID and ratings of players who played the tournament
+  const localTourneyPlayers: ratingUpdate[] = playerList.map((id) => {
+    const player = globPlayers.find((player) => player.id === id)
     if (player) {
       return {
-        username: player.username,
+        playerId: player.id,
         newRating: player.rating,
       }
     } else {
       throw new Error(
-        `Player with username: "${username}" exists in the tournament but cannot be found in global players List`,
+        `Player with ID: "${id}" exists in the tournament but cannot be found in global players List`,
       )
     }
   })
@@ -30,23 +31,25 @@ export function ratingPointsEval({
 
   tourneyGames.forEach((game) => {
     // updating games rating fields with entry ratings of both players
-    game.blackRating = localTourneyPlayers.find(
-      (player) => player?.username === game.black,
-    )?.newRating
-    game.whiteRating = localTourneyPlayers.find(
-      (player) => player?.username === game.white,
-    )?.newRating
+    // game.black_rating = localTourneyPlayers.find(
+    //   (player) => player?.playerId === game.black,
+    // )?.newRating
+    // game.white_rating = localTourneyPlayers.find(
+    //   (player) => player?.playerId === game.white,
+    // )?.newRating
+
+    // this is now done when entering/creating the games in the form. After testing, remove this
 
     // calculating rating points for players
     const blackRatingPoints = parseFloat(blackPoints(game).toFixed(2))
     const whiteRatingPoints = parseFloat(whitePoints(game).toFixed(2))
 
-    // update the localPlayers array by adding the rating points to the ratings of the appropriate usernames
+    // update the localPlayers array by adding the rating points to the ratings of the appropriate players
     localTourneyPlayers.forEach((player) => {
-      if (player?.username === game.black) {
+      if (player?.playerId === game.black) {
         player.newRating += blackRatingPoints
       }
-      if (player?.username === game.white) {
+      if (player?.playerId === game.white) {
         player.newRating += whiteRatingPoints
       }
     })
@@ -57,19 +60,19 @@ export function ratingPointsEval({
 }
 
 type ratingUpdate = {
-  username: string
+  playerId: string
   newRating: number
 }
 
 // EXPECTED SCORES
-function blackExpectedScore(duel: GAMES): number {
+function blackExpectedScore(duel: GAME): number {
   const result =
-    1 / (1 + Math.pow(10, (duel.whiteRating! - duel.blackRating!) / 400))
+    1 / (1 + Math.pow(10, (duel.white_rating! - duel.black_rating!) / 400))
   return result
 }
-function whiteExpectedScore(duel: GAMES): number {
+function whiteExpectedScore(duel: GAME): number {
   const result =
-    1 / (1 + Math.pow(10, (duel.blackRating! - duel.whiteRating!) / 400))
+    1 / (1 + Math.pow(10, (duel.black_rating! - duel.white_rating!) / 400))
   return result
 }
 
@@ -86,9 +89,9 @@ function getKFactor(rating: number): 10 | 20 | 40 {
 
 // calculates rating points for players
 
-function blackPoints(duel: GAMES): number {
+function blackPoints(duel: GAME): number {
   const expectedScore = blackExpectedScore(duel)
-  const kFactor = getKFactor(duel.blackRating!)
+  const kFactor = getKFactor(duel.black_rating!)
 
   // determine score based on game result: draw, win, forfeit
   let score: 1 | 0 | 0.5
@@ -101,7 +104,7 @@ function blackPoints(duel: GAMES): number {
     score = 1
   } else {
     throw new Error(
-      `Game result is invalid or missing for gameId: ${duel.gameId}`,
+      `Game result is invalid or missing for game_id: ${duel.game_id}`,
     )
   }
   const ratingPoints = kFactor * (score - expectedScore)
@@ -109,9 +112,9 @@ function blackPoints(duel: GAMES): number {
   return ratingPoints
 }
 
-function whitePoints(duel: GAMES): number {
+function whitePoints(duel: GAME): number {
   const expectedScore = whiteExpectedScore(duel)
-  const kFactor = getKFactor(duel.whiteRating!)
+  const kFactor = getKFactor(duel.white_rating!)
   // console.log(kFactor)
   // determine score based on game result: draw, win, forfeit
   let score: 1 | 0 | 0.5
@@ -124,7 +127,7 @@ function whitePoints(duel: GAMES): number {
     score = 1
   } else {
     throw new Error(
-      `Game result is invalid or missing for gameId: ${duel.gameId}`,
+      `Game result is invalid or missing for game_id: ${duel.game_id}`,
     )
   }
   const ratingPoints = kFactor * (score - expectedScore)

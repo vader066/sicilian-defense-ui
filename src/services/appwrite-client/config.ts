@@ -1,3 +1,5 @@
+// deprecated
+
 import { env } from '@/env'
 
 import { Client, Account, Avatars, Databases, Storage } from 'appwrite'

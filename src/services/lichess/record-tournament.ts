@@ -1,6 +1,7 @@
-import { type GAMES, type TOURNAMENT } from '@/types/database/models'
 import { type ARENATOURNAMENTGAME } from '@/types/lichess/game'
 import { localFetch } from '../fetch'
+import type { TOURNAMENT } from '@/types/database/models'
+import type { GAME } from '@/types/games'
 
 // 1. fetch a tournament data from our api which fetches the tournament from lichess api
 export async function RecordNewTournament(tournamentId: string) {
@@ -37,13 +38,14 @@ function CreateTournamentGames(
 ) {
   // need to update this to include draws and forfeits but lichess api doesn't seem to provide draw/forfeit info - investigate
   const tournament = tournamentGames.map((game) => {
-    let newgame: GAMES = {
+    let newgame: GAME = {
       // tournamentId: tournamentId,
-      gameId: game.id,
+      game_id: game.id,
       black: game.players.black.user.id,
       white: game.players.white.user.id,
       winner: getWinner(game),
-      date: new Date(),
+      played_at: new Date().toISOString(),
+      draw: false,
     }
     return newgame
   })

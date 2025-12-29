@@ -50,7 +50,7 @@ export function AddMember({
     if (player) {
       setForm({
         ...player,
-        date_of_birth: new Date(player.date_of_birth).toLocaleDateString(),
+        date_of_birth: form.date_of_birth,
       })
     }
   }, [])
