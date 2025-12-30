@@ -7,8 +7,12 @@ import { HiHome } from 'react-icons/hi2'
 import { LuSettings } from 'react-icons/lu'
 import { PiRanking, PiSignOutFill } from 'react-icons/pi'
 import { RiSunFill } from 'react-icons/ri'
+import { useAuthQuery } from '@/hooks/use-auth-query'
+import { useNavigate } from '@tanstack/react-router'
 
 function SideBar() {
+  const { logout, isLoggingOut } = useAuthQuery()
+  const navigate = useNavigate()
   return (
     <div className="fixed top-0 left-0 flex flex-col gap-3 h-screen w-max p-3 bg-slate-800">
       <div className="p-2 pb-4 border-b border-b-white/40">
@@ -34,9 +38,19 @@ function SideBar() {
         <Link to="/">
           <RiSunFill size={30} color="white" />
         </Link>
-        <Link to="/">
+        <button
+          disabled={isLoggingOut}
+          onClick={() => {
+            logout('', {
+              onSuccess: () => {
+                navigate({ to: '/app/auth/sign-in' })
+              },
+            })
+          }}
+          className="flex items-center justify-center rounded-md mt-auto cursor-pointer hover:bg-white/15 py-3"
+        >
           <PiSignOutFill size={30} color="white" />
-        </Link>
+        </button>
       </ul>
     </div>
   )

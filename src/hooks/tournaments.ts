@@ -3,8 +3,6 @@ import { tournamentServices } from '@/services/tournament-services'
 import type { syncTournReq, tournamentReq } from '@/types/tournament'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
-const queryClient = useQueryClient()
-
 export function useTournaments(clubId: string) {
   return useQuery({
     queryKey: ['tournaments', clubId],
@@ -22,6 +20,8 @@ export function useGetTournament(tournamentId: string) {
 }
 
 export function useAddTournament(clubId: string) {
+  const queryClient = useQueryClient()
+
   return useMutation({
     mutationFn: (t: tournamentReq) => tournamentServices.addTournament(t),
     onSuccess: () => {
@@ -46,6 +46,8 @@ export function useAddTournament(clubId: string) {
 }
 
 export function useSyncTournament(clubId: string) {
+  const queryClient = useQueryClient()
+
   return useMutation({
     mutationFn: (s: syncTournReq) => {
       return tournamentServices.syncTournament(s)

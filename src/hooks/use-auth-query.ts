@@ -39,8 +39,9 @@ export function useAuthQuery() {
 
   // Logout mutation
   const logoutMutation = useMutation({
-    mutationFn: () => {
+    mutationFn: (message: string) => {
       authLogout()
+      console.log(message)
       return Promise.resolve()
     },
     onSuccess: () => {

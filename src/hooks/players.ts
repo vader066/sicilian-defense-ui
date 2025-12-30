@@ -3,8 +3,6 @@ import { playerService } from '@/services/player-services'
 import type { PLAYER } from '@/types/players'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
-const queryClient = useQueryClient()
-
 export function usePlayers(clubId: string) {
   return useQuery({
     queryKey: ['players', clubId],
@@ -14,6 +12,7 @@ export function usePlayers(clubId: string) {
 }
 
 export function useAddPlayer(clubId: string) {
+  const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (playerData: Partial<PLAYER>) =>
       playerService.addPlayer(playerData),
@@ -39,6 +38,7 @@ export function useAddPlayer(clubId: string) {
 }
 
 export function useUpdatePlayer(clubId: string) {
+  const queryClient = useQueryClient()
   return useMutation({
     mutationFn: ({
       playerId,

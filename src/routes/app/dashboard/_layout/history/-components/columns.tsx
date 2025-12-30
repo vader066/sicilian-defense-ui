@@ -1,5 +1,4 @@
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/moving-border'
 import type { DBTourney } from '@/types/tournament'
 import type { ColumnDef } from '@tanstack/react-table'
 import { format } from 'date-fns'

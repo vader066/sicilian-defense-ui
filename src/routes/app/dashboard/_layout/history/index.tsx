@@ -24,6 +24,10 @@ function History() {
     isError: isTournamentError,
   } = useTournaments(user.club_id)
 
+  if (isTournamentError) {
+    return <div>An error occured</div>
+  }
+
   return selectedTourn ? (
     <div>
       <div className="flex items-center mb-5">

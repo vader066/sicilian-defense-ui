@@ -7,23 +7,28 @@ export const Route = createFileRoute('/app/auth/_layout')({
 
 function RouteComponent() {
   return (
-    <main className="w-full flex flex-col h-screen p-6 bg-slate-100">
+    <main className="w-full flex flex-col h-screen p-6 bg-[#f8f8f8]">
       <section className="w-full h-full pt-10 flex gap-8 justify-between items-center">
         <section className="flex-1 h-full flex items-center justify-between flex-col">
           <div className="flex flex-col w-full h-fit gap-2">
-            <p className="text-center">LARGEST IMAGE SOURCE</p>
-            <h1 className="text-5xl text-center">
-              POWERED BY
-              <br />
-              CREATORS AROUND
+            <p className="text-center mb-5 font-semibold">
+              LARGEST IMAGE SOURCE
+            </p>
+            <h1 className="relative text-5xl text-center">
+              <span className="absolute h-5 w-[50%] z-0 bottom-0 translate-y-[30%] rounded-full bg-[#d1fe95] left-1/2 -translate-x-[50%]"></span>
+              <p className="relative z-10">
+                POWERED BY
+                <br />
+                CREATORS AROUND
+              </p>
             </h1>
             <h1 className="text-5xl text-center flex gap-3 justify-center items-center">
               <p>THE WORLD.</p>
               <span className="flex relative">
-                <div className="relative size-9 rounded-full bg-green-950" />
-                <div className="relative -ml-[12%] size-9 rounded-full bg-green-800" />
-                <div className="relative -ml-[12%] size-9 rounded-full bg-green-600" />
-                <div className="relative -ml-[12%] size-9 rounded-full bg-green-400" />
+                <div className="relative size-9 rounded-full bg-[#334821]" />
+                <div className="relative -ml-[12%] size-9 rounded-full bg-[#4d7514]" />
+                <div className="relative -ml-[12%] size-9 rounded-full bg-[#79b82f]" />
+                <div className="relative -ml-[12%] size-9 rounded-full bg-[#b4ff52]" />
               </span>
             </h1>
           </div>
@@ -38,8 +43,8 @@ function RouteComponent() {
             </a>
           </div>
           <div
-            style={{ backgroundImage: `url(/images/sign-in-sm.jpg)` }}
-            className="w-full rounded-2xl text-white font-bold text-sm py-14 flex justify-center gap-4 bg-cover bg-center"
+            style={{ backgroundImage: `url(/images/sign-in-sm-v2.jpg)` }}
+            className="w-full rounded-2xl text-white font-normal text-sm py-14 flex justify-center gap-4 bg-cover bg-center"
           >
             <p>About Us</p>
             <p>

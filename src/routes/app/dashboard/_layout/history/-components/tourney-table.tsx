@@ -8,7 +8,7 @@ import { getPlayer } from '@/services/player-services'
 import type { GAME } from '@/types/games'
 import type { DBTourney } from '@/types/tournament'
 import type { ColumnDef } from '@tanstack/react-table'
-import { useMemo } from 'react'
+// import { useMemo } from 'react'
 import { PiWarningDiamond } from 'react-icons/pi'
 
 const getWinnerBadge = (winner: string) => {
@@ -52,91 +52,87 @@ export function TourneyTable({ tourn }: { tourn: DBTourney }) {
     )
   }
 
-  const columns = useMemo<ColumnDef<GAME>[]>(
-    () => [
-      {
-        id: 'matchNumber',
-        header: 'Match #',
-        cell: ({ row }) => {
-          return (
-            <div className="font-medium w-full flex text-slate-600">
-              #{row.index + 1}
-            </div>
-          )
-        },
+  const columns: ColumnDef<GAME>[] = [
+    {
+      id: 'matchNumber',
+      header: 'Match #',
+      cell: ({ row }) => {
+        return (
+          <div className="font-medium w-full flex text-slate-600">
+            #{row.index + 1}
+          </div>
+        )
       },
-      {
-        accessorKey: 'white',
-        header: 'White',
-        cell: (row) => {
-          const playerId = row.getValue() as string
-          const player = getPlayer(playerId, players)
-          return (
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-white border-2 border-slate-300 rounded-full"></div>
-              {player ? (
-                player.username
-              ) : (
-                <div className="text-red-500 flex gap-2 items-center">
-                  <span>{playerId}</span>
-                  <PiWarningDiamond />
-                </div>
-              )}
-            </div>
-          )
-        },
+    },
+    {
+      accessorKey: 'white',
+      header: 'White',
+      cell: (row) => {
+        const playerId = row.getValue() as string
+        const player = getPlayer(playerId, players)
+        return (
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 bg-white border-2 border-slate-300 rounded-full"></div>
+            {player ? (
+              player.username
+            ) : (
+              <div className="text-red-500 flex gap-2 items-center">
+                <span>{playerId}</span>
+                <PiWarningDiamond />
+              </div>
+            )}
+          </div>
+        )
       },
-      {
-        accessorKey: 'black',
-        header: 'Black',
-        cell: (row) => {
-          const playerId = row.getValue() as string
-          const player = getPlayer(playerId, players)
-          return (
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-slate-800 rounded-full"></div>
-              {player ? (
-                player.username
-              ) : (
-                <div className="text-red-500 flex gap-2 items-center">
-                  <span>{playerId}</span>
-                  <PiWarningDiamond />
-                </div>
-              )}
-            </div>
-          )
-        },
+    },
+    {
+      accessorKey: 'black',
+      header: 'Black',
+      cell: (row) => {
+        const playerId = row.getValue() as string
+        const player = getPlayer(playerId, players)
+        return (
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 bg-slate-800 rounded-full"></div>
+            {player ? (
+              player.username
+            ) : (
+              <div className="text-red-500 flex gap-2 items-center">
+                <span>{playerId}</span>
+                <PiWarningDiamond />
+              </div>
+            )}
+          </div>
+        )
       },
-      {
-        accessorKey: 'winner',
-        header: () => {
-          return (
-            <div className="font-medium w-full justify-center flex text-slate-600">
-              Winner
-            </div>
-          )
-        },
-        cell: (row) => {
-          const playerId = row.getValue() as string
-          const player = getPlayer(playerId, players)
-          return (
-            <div className="contents">
-              {player ? (
-                getWinnerBadge(player.username)
-              ) : (
-                <div className="text-red-500 flex gap-2 w-full justify-center items-center">
-                  {getWinnerBadge(playerId)}
-                  <PiWarningDiamond />
-                </div>
-              )}
-            </div>
-          )
-        },
+    },
+    {
+      accessorKey: 'winner',
+      header: () => {
+        return (
+          <div className="font-medium w-full justify-center flex text-slate-600">
+            Winner
+          </div>
+        )
       },
-    ],
-    [players],
-  )
-
+      cell: (row) => {
+        const playerId = row.getValue() as string
+        const player = getPlayer(playerId, players)
+        return (
+          <div className="contents">
+            {player ? (
+              getWinnerBadge(player.username)
+            ) : (
+              <div className="text-red-500 flex gap-2 w-full justify-center items-center">
+                {getWinnerBadge(playerId)}
+                <PiWarningDiamond />
+              </div>
+            )}
+          </div>
+        )
+      },
+    },
+  ]
   return (
     <DataTable
       TheadClassName="!text-start font-semibold text-slate-700"
