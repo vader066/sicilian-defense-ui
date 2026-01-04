@@ -29,6 +29,7 @@ export const Route = createFileRoute(
 export type GameResultEntry = {
   game_id: string
   black: string // black player ID
+  round: number
   black_rating: number // rating of black when game was played
   white: string // white player ID
   white_rating: number // rating of white when game was  played
@@ -49,6 +50,7 @@ function DynamicForm() {
   )
 
   const [canRemove, setCanRemove] = useState(false)
+  const [maxRound, setMaxRound] = useState(1)
   const [fields, setFields] = useState<Array<GameResultEntry>>([])
   const [tournamentName, setTournamentName] = useState('')
   const [games, setGames] = useState<GAME[]>([])
@@ -62,6 +64,7 @@ function DynamicForm() {
         {
           game_id: uuidv4(),
           white: placeholderWhite.id,
+          round: maxRound,
           white_rating: placeholderWhite.rating,
           black: placeholderBlack.id,
           black_rating: placeholderBlack.rating,
@@ -133,6 +136,7 @@ function DynamicForm() {
       ...fields,
       {
         game_id: uuidv4(),
+        round: maxRound,
         white: placeholderWhite.id,
         white_rating: placeholderWhite.rating,
         black: placeholderBlack.id,
@@ -158,6 +162,12 @@ function DynamicForm() {
         | 'WF'
         | 'BF'
         | 'FF'
+    } else if (name === 'round') {
+      const fieldRound = newFields[index].round
+      newFields[index].round = Number(value)
+      if (newFields[index].round > maxRound) {
+        setMaxRound(fieldRound)
+      }
     }
     setFields(newFields) // Update state for the specific field
   }
@@ -271,6 +281,27 @@ function DynamicForm() {
               <SelectItem value={'FF'}>
                 <span>Double Forfeit</span>
               </SelectItem>
+            </SelectContent>
+          </Select>
+          <Select
+            name="result"
+            value={field.result}
+            onValueChange={(value) => {
+              handleSelectChange(value, 'result', index)
+            }}
+          >
+            <SelectTrigger className="h-8 w-fit bg-white py-5">
+              <SelectValue placeholder={field.round} />
+            </SelectTrigger>
+            <SelectContent side="bottom">
+              {Array(10).map((_, idx) => {
+                const round = String(idx + 1)
+                return (
+                  <SelectItem value={round}>
+                    <span>{round}</span>
+                  </SelectItem>
+                )
+              })}
             </SelectContent>
           </Select>
           <button

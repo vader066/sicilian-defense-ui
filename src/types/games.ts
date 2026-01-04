@@ -2,6 +2,7 @@ export interface GAME {
   game_id: string
   black: string //Black Player ID
   white: string //White Player ID
+  round: number
   winner?: string
   black_rating?: number // shouldn't be optional will change later
   white_rating?: number // shouldn't be optional will change later
