@@ -1,4 +1,9 @@
-import { createFileRoute, Outlet } from '@tanstack/react-router'
+import {
+  createFileRoute,
+  Link,
+  Outlet,
+  useMatchRoute,
+} from '@tanstack/react-router'
 import { ArrowRight } from 'lucide-react'
 
 export const Route = createFileRoute('/app/auth/_layout')({
@@ -6,6 +11,10 @@ export const Route = createFileRoute('/app/auth/_layout')({
 })
 
 function RouteComponent() {
+  const matchRoute = useMatchRoute()
+  const signIn = !!matchRoute({ to: '/app/auth/sign-in' })
+  const signUp = !!matchRoute({ to: '/app/auth/sign-up' })
+
   return (
     <main className="w-full flex flex-col h-screen p-6 bg-[#f8f8f8]">
       <section className="w-full h-full pt-10 flex gap-8 justify-between items-center">
@@ -28,18 +37,27 @@ function RouteComponent() {
                 <div className="relative size-9 rounded-full bg-[#334821]" />
                 <div className="relative -ml-[12%] size-9 rounded-full bg-[#4d7514]" />
                 <div className="relative -ml-[12%] size-9 rounded-full bg-[#79b82f]" />
-                <div className="relative -ml-[12%] size-9 rounded-full bg-[#b4ff52]" />
+                <div className="relative -ml-[12%] size-9 rounded-full bg-main" />
               </span>
             </h1>
           </div>
           <div className="flex flex-col text-xs gap-3">
-            <p>Don't have an account?</p>
-            <a
-              href="#"
-              className="px-2 py-1 border-b w-fit border-black flex gap-2 items-center"
-            >
-              <span>Create account</span>
-              <ArrowRight size={14} />
+            {signIn && <p>Don't have an account?</p>}
+            {signUp && <p>Already have an account?</p>}
+            <a className="px-2 py-1 self-center border-b w-fit border-black flex gap-2 items-center">
+              {signIn && (
+                <Link to="/app/auth/sign-up" className="contents">
+                  <span>Create account</span>
+
+                  <ArrowRight size={14} />
+                </Link>
+              )}
+              {signUp && (
+                <Link to="/app/auth/sign-in" className="contents">
+                  <span>Sign In</span>
+                  <ArrowRight size={14} />
+                </Link>
+              )}
             </a>
           </div>
           <div

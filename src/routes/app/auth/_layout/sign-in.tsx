@@ -119,7 +119,7 @@ function SignIn() {
             isLoggingIn || fieldError.email !== '' || fieldError.password !== ''
           }
           className={cn(
-            'py-2 rounded-lg text-sm font-semibold bg-black w-full text-white cursor-pointer',
+            'py-2 rounded-lg text-sm font-semibold bg-black w-full text-white cursor-pointer min-h-[36px]',
             {
               'opacity-20': isLoggingIn,
               'cursor-not-allowed':
