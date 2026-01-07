@@ -4,6 +4,7 @@ import type { PLAYER } from './players'
 export interface TOURNAMENT {
   id: string
   tournamentName: string
+  numberOfRounds: number
   games: Array<GAME>
   playerIDs: Array<string> // player id's
   dbPlayers?: Array<PLAYER> // don't use for now
@@ -15,6 +16,7 @@ export interface TOURNAMENT {
 export interface DBTourney {
   id: string
   tournament_name: string
+  number_of_rounds: number
   number_of_players: number
   synced: boolean
   club_id: string
@@ -23,6 +25,7 @@ export interface DBTourney {
 
 export type tournamentReq = {
   tournamentName: string
+  numberOfRounds: number
   games: GAME[]
   playerIDs: string[]
 }

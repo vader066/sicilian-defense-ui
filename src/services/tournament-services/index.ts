@@ -24,13 +24,16 @@ export function GetTourneyPlayers(games: GAME[]): Array<string> {
 
 export const tournamentServices = {
   createDBTourneyReq({
+    numberOfRounds,
     games,
     tournamentName,
   }: {
+    numberOfRounds: number
     games: GAME[]
     tournamentName: string
   }): tournamentReq {
     return {
+      numberOfRounds: numberOfRounds,
       tournamentName: tournamentName,
       games: games,
       playerIDs: GetTourneyPlayers(games),
