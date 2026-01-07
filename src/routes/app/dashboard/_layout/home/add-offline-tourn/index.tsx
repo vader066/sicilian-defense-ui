@@ -184,6 +184,7 @@ function DynamicForm() {
     event.preventDefault()
     console.log('Submitted Fields:', fields)
     const payload = tournamentServices.createDBTourneyReq({
+      numberOfRounds: maxRound,
       games: games,
       tournamentName: tournamentName,
     })
