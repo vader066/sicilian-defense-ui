@@ -37,7 +37,7 @@ function RouteComponent() {
                 <div className="relative size-9 rounded-full bg-[#334821]" />
                 <div className="relative -ml-[12%] size-9 rounded-full bg-[#4d7514]" />
                 <div className="relative -ml-[12%] size-9 rounded-full bg-[#79b82f]" />
-                <div className="relative -ml-[12%] size-9 rounded-full bg-[#b4ff52]" />
+                <div className="relative -ml-[12%] size-9 rounded-full bg-main" />
               </span>
             </h1>
           </div>
