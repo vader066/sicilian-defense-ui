@@ -25,7 +25,7 @@ function SideBar() {
         <Link to="/app/dashboard/leaderboard">
           <PiRanking size={30} color="white" />
         </Link>
-        <Link to="/app/dashboard/history">
+        <Link to="/app/dashboard/tournaments">
           <BsClockHistory size={30} color="white" />
         </Link>
         <Link to="/">

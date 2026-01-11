@@ -10,7 +10,7 @@ import { BiArrowBack } from 'react-icons/bi'
 import { useTournaments } from '@/hooks/tournaments'
 import type { DBTourney } from '@/types/tournament'
 
-export const Route = createFileRoute('/app/dashboard/_layout/history/')({
+export const Route = createFileRoute('/app/dashboard/_layout/tournaments/')({
   component: History,
 })
 
