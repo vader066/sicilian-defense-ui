@@ -1,13 +1,11 @@
 import DataTable from '@/components/data-table'
 import { Toolbar } from '@/components/data-table/tournament-toolbar'
 import { Badge } from '@/components/ui/badge'
-import { Spinner } from '@/components/ui/spinner'
-import { usePlayers } from '@/hooks/players'
-import { useGetTournament } from '@/hooks/tournaments'
 import { getPlayer } from '@/services/player-services'
 import type { GAME } from '@/types/games'
-import type { DBTourney } from '@/types/tournament'
 import type { ColumnDef } from '@tanstack/react-table'
+import type { PLAYER } from '@/types/players'
+import type { TOURNAMENT } from '@/types/tournament'
 // import { useMemo } from 'react'
 import { PiWarningDiamond } from 'react-icons/pi'
 
@@ -17,41 +15,13 @@ const getWinnerBadge = (winner: string) => {
   }
   return <Badge variant="default">{winner}</Badge>
 }
-export function TourneyTable({ tourn }: { tourn: DBTourney }) {
-  // get tournament with games
-  const {
-    data: tournament,
-    isPending: tournamentPending,
-    error: tournamentError,
-  } = useGetTournament(tourn.id)
-
-  // get club players
-  const {
-    data: players,
-    isPending: playersPending,
-    error: playersError,
-  } = usePlayers(tourn.club_id)
-
-  const isLoading = tournamentPending || playersPending
-
-  const error = tournamentError || playersError
-
-  if (isLoading) {
-    return (
-      <div className="contents">
-        <Spinner />
-      </div>
-    )
-  }
-
-  if (error) {
-    return (
-      <div className="contents">
-        <p>Error: {error.message}</p>
-      </div>
-    )
-  }
-
+export function TourneyTable({
+  tournament,
+  players,
+}: {
+  tournament: TOURNAMENT
+  players: PLAYER[]
+}) {
   const columns: ColumnDef<GAME>[] = [
     {
       id: 'matchNumber',
@@ -140,7 +110,7 @@ export function TourneyTable({ tourn }: { tourn: DBTourney }) {
       DataTableToolbar={(props) => (
         <Toolbar {...props} players={players} tourney={tournament} />
       )}
-      isLoading={isLoading}
+      isLoading={false}
       data={tournament?.games || []}
       columns={columns}
     />

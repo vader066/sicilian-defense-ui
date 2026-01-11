@@ -1,22 +1,18 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 // import { tournamentStore } from "@/store/tournament-data";
-import { useState } from 'react'
 import DataTable from '@/components/data-table'
 import { tournamentColumns } from './-components/columns'
-import { TourneyTable } from './-components/tourney-table'
-import { Button } from '@/components/ui/button'
 import { Button as MovingBorderButton } from '@/components/ui/moving-border'
-import { BiArrowBack } from 'react-icons/bi'
 import { useTournaments } from '@/hooks/tournaments'
 import type { DBTourney } from '@/types/tournament'
 
-export const Route = createFileRoute('/app/dashboard/_layout/history/')({
-  component: History,
+export const Route = createFileRoute('/app/dashboard/_layout/tournaments/')({
+  component: TournamentPage,
 })
 
-function History() {
+function TournamentPage() {
   const { user } = Route.useRouteContext()
-  const [selectedTourn, setSelectedTourn] = useState<DBTourney | null>(null)
+  const navigate = useNavigate()
 
   const {
     data: tournaments,
@@ -28,19 +24,14 @@ function History() {
     return <div>An error occured</div>
   }
 
-  return selectedTourn ? (
-    <div>
-      <div className="flex items-center mb-5">
-        <Button
-          onClick={() => setSelectedTourn(null)}
-          className="bg-white border-slate-300 border"
-        >
-          <BiArrowBack className="text-black" />
-        </Button>
-      </div>
-      <TourneyTable tourn={selectedTourn} />
-    </div>
-  ) : (
+  const handleViewTournament = (tourn: DBTourney) => {
+    navigate({
+      to: '/app/dashboard/tournaments/$tournamentId',
+      params: { tournamentId: tourn.id },
+    })
+  }
+
+  return (
     <div className="text-xl flex flex-col gap-4 w-full items-center justify-center">
       <h1 className="text-2xl font-bold text-slate-800">Tournaments</h1>
       <DataTable
@@ -60,9 +51,7 @@ function History() {
               return (
                 <div>
                   <MovingBorderButton
-                    onClick={() => {
-                      setSelectedTourn(tourn)
-                    }}
+                    onClick={() => handleViewTournament(tourn)}
                     borderRadius="1.75rem"
                     type="button"
                     containerClassName="!w-auto !h-auto hover:scale-105"

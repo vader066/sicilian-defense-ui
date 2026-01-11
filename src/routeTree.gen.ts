@@ -19,10 +19,12 @@ import { Route as AppDashboardLayoutImport } from './routes/app/dashboard/_layou
 import { Route as AppAuthLayoutImport } from './routes/app/auth/_layout'
 import { Route as AppAuthLayoutSignUpImport } from './routes/app/auth/_layout/sign-up'
 import { Route as AppAuthLayoutSignInImport } from './routes/app/auth/_layout/sign-in'
+import { Route as AppDashboardLayoutTournamentsIndexImport } from './routes/app/dashboard/_layout/tournaments/index'
 import { Route as AppDashboardLayoutSettingsIndexImport } from './routes/app/dashboard/_layout/settings/index'
 import { Route as AppDashboardLayoutLeaderboardIndexImport } from './routes/app/dashboard/_layout/leaderboard/index'
 import { Route as AppDashboardLayoutHomeIndexImport } from './routes/app/dashboard/_layout/home/index'
-import { Route as AppDashboardLayoutHistoryIndexImport } from './routes/app/dashboard/_layout/history/index'
+import { Route as AppDashboardLayoutTournamentsCreateRoundRobinTournamentIndexImport } from './routes/app/dashboard/_layout/tournaments/create-round-robin-tournament/index'
+import { Route as AppDashboardLayoutTournamentsTournamentIdIndexImport } from './routes/app/dashboard/_layout/tournaments/$tournamentId/index'
 import { Route as AppDashboardLayoutHomeManageUsersIndexImport } from './routes/app/dashboard/_layout/home/manage-users/index'
 import { Route as AppDashboardLayoutHomeAddOnlineTournIndexImport } from './routes/app/dashboard/_layout/home/add-online-tourn/index'
 import { Route as AppDashboardLayoutHomeAddOfflineTournIndexImport } from './routes/app/dashboard/_layout/home/add-offline-tourn/index'
@@ -80,6 +82,13 @@ const AppAuthLayoutSignInRoute = AppAuthLayoutSignInImport.update({
   getParentRoute: () => AppAuthLayoutRoute,
 } as any)
 
+const AppDashboardLayoutTournamentsIndexRoute =
+  AppDashboardLayoutTournamentsIndexImport.update({
+    id: '/tournaments/',
+    path: '/tournaments/',
+    getParentRoute: () => AppDashboardLayoutRoute,
+  } as any)
+
 const AppDashboardLayoutSettingsIndexRoute =
   AppDashboardLayoutSettingsIndexImport.update({
     id: '/settings/',
@@ -101,10 +110,17 @@ const AppDashboardLayoutHomeIndexRoute =
     getParentRoute: () => AppDashboardLayoutRoute,
   } as any)
 
-const AppDashboardLayoutHistoryIndexRoute =
-  AppDashboardLayoutHistoryIndexImport.update({
-    id: '/history/',
-    path: '/history/',
+const AppDashboardLayoutTournamentsCreateRoundRobinTournamentIndexRoute =
+  AppDashboardLayoutTournamentsCreateRoundRobinTournamentIndexImport.update({
+    id: '/tournaments/create-round-robin-tournament/',
+    path: '/tournaments/create-round-robin-tournament/',
+    getParentRoute: () => AppDashboardLayoutRoute,
+  } as any)
+
+const AppDashboardLayoutTournamentsTournamentIdIndexRoute =
+  AppDashboardLayoutTournamentsTournamentIdIndexImport.update({
+    id: '/tournaments/$tournamentId/',
+    path: '/tournaments/$tournamentId/',
     getParentRoute: () => AppDashboardLayoutRoute,
   } as any)
 
@@ -189,13 +205,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAuthLayoutSignUpImport
       parentRoute: typeof AppAuthLayoutImport
     }
-    '/app/dashboard/_layout/history/': {
-      id: '/app/dashboard/_layout/history/'
-      path: '/history'
-      fullPath: '/app/dashboard/history'
-      preLoaderRoute: typeof AppDashboardLayoutHistoryIndexImport
-      parentRoute: typeof AppDashboardLayoutImport
-    }
     '/app/dashboard/_layout/home/': {
       id: '/app/dashboard/_layout/home/'
       path: '/home'
@@ -217,6 +226,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppDashboardLayoutSettingsIndexImport
       parentRoute: typeof AppDashboardLayoutImport
     }
+    '/app/dashboard/_layout/tournaments/': {
+      id: '/app/dashboard/_layout/tournaments/'
+      path: '/tournaments'
+      fullPath: '/app/dashboard/tournaments'
+      preLoaderRoute: typeof AppDashboardLayoutTournamentsIndexImport
+      parentRoute: typeof AppDashboardLayoutImport
+    }
     '/app/dashboard/_layout/home/add-offline-tourn/': {
       id: '/app/dashboard/_layout/home/add-offline-tourn/'
       path: '/home/add-offline-tourn'
@@ -236,6 +252,20 @@ declare module '@tanstack/react-router' {
       path: '/home/manage-users'
       fullPath: '/app/dashboard/home/manage-users'
       preLoaderRoute: typeof AppDashboardLayoutHomeManageUsersIndexImport
+      parentRoute: typeof AppDashboardLayoutImport
+    }
+    '/app/dashboard/_layout/tournaments/$tournamentId/': {
+      id: '/app/dashboard/_layout/tournaments/$tournamentId/'
+      path: '/tournaments/$tournamentId'
+      fullPath: '/app/dashboard/tournaments/$tournamentId'
+      preLoaderRoute: typeof AppDashboardLayoutTournamentsTournamentIdIndexImport
+      parentRoute: typeof AppDashboardLayoutImport
+    }
+    '/app/dashboard/_layout/tournaments/create-round-robin-tournament/': {
+      id: '/app/dashboard/_layout/tournaments/create-round-robin-tournament/'
+      path: '/tournaments/create-round-robin-tournament'
+      fullPath: '/app/dashboard/tournaments/create-round-robin-tournament'
+      preLoaderRoute: typeof AppDashboardLayoutTournamentsCreateRoundRobinTournamentIndexImport
       parentRoute: typeof AppDashboardLayoutImport
     }
   }
@@ -269,27 +299,34 @@ const AppAuthRouteWithChildren =
   AppAuthRoute._addFileChildren(AppAuthRouteChildren)
 
 interface AppDashboardLayoutRouteChildren {
-  AppDashboardLayoutHistoryIndexRoute: typeof AppDashboardLayoutHistoryIndexRoute
   AppDashboardLayoutHomeIndexRoute: typeof AppDashboardLayoutHomeIndexRoute
   AppDashboardLayoutLeaderboardIndexRoute: typeof AppDashboardLayoutLeaderboardIndexRoute
   AppDashboardLayoutSettingsIndexRoute: typeof AppDashboardLayoutSettingsIndexRoute
+  AppDashboardLayoutTournamentsIndexRoute: typeof AppDashboardLayoutTournamentsIndexRoute
   AppDashboardLayoutHomeAddOfflineTournIndexRoute: typeof AppDashboardLayoutHomeAddOfflineTournIndexRoute
   AppDashboardLayoutHomeAddOnlineTournIndexRoute: typeof AppDashboardLayoutHomeAddOnlineTournIndexRoute
   AppDashboardLayoutHomeManageUsersIndexRoute: typeof AppDashboardLayoutHomeManageUsersIndexRoute
+  AppDashboardLayoutTournamentsTournamentIdIndexRoute: typeof AppDashboardLayoutTournamentsTournamentIdIndexRoute
+  AppDashboardLayoutTournamentsCreateRoundRobinTournamentIndexRoute: typeof AppDashboardLayoutTournamentsCreateRoundRobinTournamentIndexRoute
 }
 
 const AppDashboardLayoutRouteChildren: AppDashboardLayoutRouteChildren = {
-  AppDashboardLayoutHistoryIndexRoute: AppDashboardLayoutHistoryIndexRoute,
   AppDashboardLayoutHomeIndexRoute: AppDashboardLayoutHomeIndexRoute,
   AppDashboardLayoutLeaderboardIndexRoute:
     AppDashboardLayoutLeaderboardIndexRoute,
   AppDashboardLayoutSettingsIndexRoute: AppDashboardLayoutSettingsIndexRoute,
+  AppDashboardLayoutTournamentsIndexRoute:
+    AppDashboardLayoutTournamentsIndexRoute,
   AppDashboardLayoutHomeAddOfflineTournIndexRoute:
     AppDashboardLayoutHomeAddOfflineTournIndexRoute,
   AppDashboardLayoutHomeAddOnlineTournIndexRoute:
     AppDashboardLayoutHomeAddOnlineTournIndexRoute,
   AppDashboardLayoutHomeManageUsersIndexRoute:
     AppDashboardLayoutHomeManageUsersIndexRoute,
+  AppDashboardLayoutTournamentsTournamentIdIndexRoute:
+    AppDashboardLayoutTournamentsTournamentIdIndexRoute,
+  AppDashboardLayoutTournamentsCreateRoundRobinTournamentIndexRoute:
+    AppDashboardLayoutTournamentsCreateRoundRobinTournamentIndexRoute,
 }
 
 const AppDashboardLayoutRouteWithChildren =
@@ -314,13 +351,15 @@ export interface FileRoutesByFullPath {
   '/app/dashboard': typeof AppDashboardLayoutRouteWithChildren
   '/app/auth/sign-in': typeof AppAuthLayoutSignInRoute
   '/app/auth/sign-up': typeof AppAuthLayoutSignUpRoute
-  '/app/dashboard/history': typeof AppDashboardLayoutHistoryIndexRoute
   '/app/dashboard/home': typeof AppDashboardLayoutHomeIndexRoute
   '/app/dashboard/leaderboard': typeof AppDashboardLayoutLeaderboardIndexRoute
   '/app/dashboard/settings': typeof AppDashboardLayoutSettingsIndexRoute
+  '/app/dashboard/tournaments': typeof AppDashboardLayoutTournamentsIndexRoute
   '/app/dashboard/home/add-offline-tourn': typeof AppDashboardLayoutHomeAddOfflineTournIndexRoute
   '/app/dashboard/home/add-online-tourn': typeof AppDashboardLayoutHomeAddOnlineTournIndexRoute
   '/app/dashboard/home/manage-users': typeof AppDashboardLayoutHomeManageUsersIndexRoute
+  '/app/dashboard/tournaments/$tournamentId': typeof AppDashboardLayoutTournamentsTournamentIdIndexRoute
+  '/app/dashboard/tournaments/create-round-robin-tournament': typeof AppDashboardLayoutTournamentsCreateRoundRobinTournamentIndexRoute
 }
 
 export interface FileRoutesByTo {
@@ -330,13 +369,15 @@ export interface FileRoutesByTo {
   '/app/dashboard': typeof AppDashboardLayoutRouteWithChildren
   '/app/auth/sign-in': typeof AppAuthLayoutSignInRoute
   '/app/auth/sign-up': typeof AppAuthLayoutSignUpRoute
-  '/app/dashboard/history': typeof AppDashboardLayoutHistoryIndexRoute
   '/app/dashboard/home': typeof AppDashboardLayoutHomeIndexRoute
   '/app/dashboard/leaderboard': typeof AppDashboardLayoutLeaderboardIndexRoute
   '/app/dashboard/settings': typeof AppDashboardLayoutSettingsIndexRoute
+  '/app/dashboard/tournaments': typeof AppDashboardLayoutTournamentsIndexRoute
   '/app/dashboard/home/add-offline-tourn': typeof AppDashboardLayoutHomeAddOfflineTournIndexRoute
   '/app/dashboard/home/add-online-tourn': typeof AppDashboardLayoutHomeAddOnlineTournIndexRoute
   '/app/dashboard/home/manage-users': typeof AppDashboardLayoutHomeManageUsersIndexRoute
+  '/app/dashboard/tournaments/$tournamentId': typeof AppDashboardLayoutTournamentsTournamentIdIndexRoute
+  '/app/dashboard/tournaments/create-round-robin-tournament': typeof AppDashboardLayoutTournamentsCreateRoundRobinTournamentIndexRoute
 }
 
 export interface FileRoutesById {
@@ -349,13 +390,15 @@ export interface FileRoutesById {
   '/app/dashboard/_layout': typeof AppDashboardLayoutRouteWithChildren
   '/app/auth/_layout/sign-in': typeof AppAuthLayoutSignInRoute
   '/app/auth/_layout/sign-up': typeof AppAuthLayoutSignUpRoute
-  '/app/dashboard/_layout/history/': typeof AppDashboardLayoutHistoryIndexRoute
   '/app/dashboard/_layout/home/': typeof AppDashboardLayoutHomeIndexRoute
   '/app/dashboard/_layout/leaderboard/': typeof AppDashboardLayoutLeaderboardIndexRoute
   '/app/dashboard/_layout/settings/': typeof AppDashboardLayoutSettingsIndexRoute
+  '/app/dashboard/_layout/tournaments/': typeof AppDashboardLayoutTournamentsIndexRoute
   '/app/dashboard/_layout/home/add-offline-tourn/': typeof AppDashboardLayoutHomeAddOfflineTournIndexRoute
   '/app/dashboard/_layout/home/add-online-tourn/': typeof AppDashboardLayoutHomeAddOnlineTournIndexRoute
   '/app/dashboard/_layout/home/manage-users/': typeof AppDashboardLayoutHomeManageUsersIndexRoute
+  '/app/dashboard/_layout/tournaments/$tournamentId/': typeof AppDashboardLayoutTournamentsTournamentIdIndexRoute
+  '/app/dashboard/_layout/tournaments/create-round-robin-tournament/': typeof AppDashboardLayoutTournamentsCreateRoundRobinTournamentIndexRoute
 }
 
 export interface FileRouteTypes {
@@ -367,13 +410,15 @@ export interface FileRouteTypes {
     | '/app/dashboard'
     | '/app/auth/sign-in'
     | '/app/auth/sign-up'
-    | '/app/dashboard/history'
     | '/app/dashboard/home'
     | '/app/dashboard/leaderboard'
     | '/app/dashboard/settings'
+    | '/app/dashboard/tournaments'
     | '/app/dashboard/home/add-offline-tourn'
     | '/app/dashboard/home/add-online-tourn'
     | '/app/dashboard/home/manage-users'
+    | '/app/dashboard/tournaments/$tournamentId'
+    | '/app/dashboard/tournaments/create-round-robin-tournament'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -382,13 +427,15 @@ export interface FileRouteTypes {
     | '/app/dashboard'
     | '/app/auth/sign-in'
     | '/app/auth/sign-up'
-    | '/app/dashboard/history'
     | '/app/dashboard/home'
     | '/app/dashboard/leaderboard'
     | '/app/dashboard/settings'
+    | '/app/dashboard/tournaments'
     | '/app/dashboard/home/add-offline-tourn'
     | '/app/dashboard/home/add-online-tourn'
     | '/app/dashboard/home/manage-users'
+    | '/app/dashboard/tournaments/$tournamentId'
+    | '/app/dashboard/tournaments/create-round-robin-tournament'
   id:
     | '__root__'
     | '/'
@@ -399,13 +446,15 @@ export interface FileRouteTypes {
     | '/app/dashboard/_layout'
     | '/app/auth/_layout/sign-in'
     | '/app/auth/_layout/sign-up'
-    | '/app/dashboard/_layout/history/'
     | '/app/dashboard/_layout/home/'
     | '/app/dashboard/_layout/leaderboard/'
     | '/app/dashboard/_layout/settings/'
+    | '/app/dashboard/_layout/tournaments/'
     | '/app/dashboard/_layout/home/add-offline-tourn/'
     | '/app/dashboard/_layout/home/add-online-tourn/'
     | '/app/dashboard/_layout/home/manage-users/'
+    | '/app/dashboard/_layout/tournaments/$tournamentId/'
+    | '/app/dashboard/_layout/tournaments/create-round-robin-tournament/'
   fileRoutesById: FileRoutesById
 }
 
@@ -469,13 +518,15 @@ export const routeTree = rootRoute
       "filePath": "app/dashboard/_layout.tsx",
       "parent": "/app/dashboard",
       "children": [
-        "/app/dashboard/_layout/history/",
         "/app/dashboard/_layout/home/",
         "/app/dashboard/_layout/leaderboard/",
         "/app/dashboard/_layout/settings/",
+        "/app/dashboard/_layout/tournaments/",
         "/app/dashboard/_layout/home/add-offline-tourn/",
         "/app/dashboard/_layout/home/add-online-tourn/",
-        "/app/dashboard/_layout/home/manage-users/"
+        "/app/dashboard/_layout/home/manage-users/",
+        "/app/dashboard/_layout/tournaments/$tournamentId/",
+        "/app/dashboard/_layout/tournaments/create-round-robin-tournament/"
       ]
     },
     "/app/auth/_layout/sign-in": {
@@ -485,10 +536,6 @@ export const routeTree = rootRoute
     "/app/auth/_layout/sign-up": {
       "filePath": "app/auth/_layout/sign-up.tsx",
       "parent": "/app/auth/_layout"
-    },
-    "/app/dashboard/_layout/history/": {
-      "filePath": "app/dashboard/_layout/history/index.tsx",
-      "parent": "/app/dashboard/_layout"
     },
     "/app/dashboard/_layout/home/": {
       "filePath": "app/dashboard/_layout/home/index.tsx",
@@ -502,6 +549,10 @@ export const routeTree = rootRoute
       "filePath": "app/dashboard/_layout/settings/index.tsx",
       "parent": "/app/dashboard/_layout"
     },
+    "/app/dashboard/_layout/tournaments/": {
+      "filePath": "app/dashboard/_layout/tournaments/index.tsx",
+      "parent": "/app/dashboard/_layout"
+    },
     "/app/dashboard/_layout/home/add-offline-tourn/": {
       "filePath": "app/dashboard/_layout/home/add-offline-tourn/index.tsx",
       "parent": "/app/dashboard/_layout"
@@ -512,6 +563,14 @@ export const routeTree = rootRoute
     },
     "/app/dashboard/_layout/home/manage-users/": {
       "filePath": "app/dashboard/_layout/home/manage-users/index.tsx",
+      "parent": "/app/dashboard/_layout"
+    },
+    "/app/dashboard/_layout/tournaments/$tournamentId/": {
+      "filePath": "app/dashboard/_layout/tournaments/$tournamentId/index.tsx",
+      "parent": "/app/dashboard/_layout"
+    },
+    "/app/dashboard/_layout/tournaments/create-round-robin-tournament/": {
+      "filePath": "app/dashboard/_layout/tournaments/create-round-robin-tournament/index.tsx",
       "parent": "/app/dashboard/_layout"
     }
   }

@@ -3,10 +3,14 @@ import type {
   syncTournReq,
   TOURNAMENT,
   tournamentReq,
+  createRoundRobinTournamentReq,
+  createRoundRobinTournamentRes,
+  Round,
 } from '@/types/tournament'
 import api from '../api-client'
 import type { ApiResponse } from '../types'
 import type { GAME } from '@/types/games'
+import { ServerError } from '@/types/auth'
 
 // Creates an array of player ID's of all players that played in a tournament
 export function GetTourneyPlayers(games: GAME[]): Array<string> {
@@ -97,6 +101,32 @@ export const tournamentServices = {
       return response.data
     } catch (error) {
       throw error
+    }
+  },
+
+  async createRoundRobinTournament(
+    data: createRoundRobinTournamentReq,
+  ): Promise<createRoundRobinTournamentRes> {
+    try {
+      const response = await api.post<
+        ApiResponse<createRoundRobinTournamentRes>
+      >(`/tournaments/round-robin/create`, data)
+      return response.data.data
+    } catch (error) {
+      throw new ServerError('Failed to create round robin tournament', error)
+    }
+  },
+
+  async getTournamentPairings(
+    tournamentId: string,
+  ): Promise<{ rounds: Round[] }> {
+    try {
+      const response = await api.get<ApiResponse<{ rounds: Round[] }>>(
+        `/tournaments/${tournamentId}/pairings`,
+      )
+      return response.data.data
+    } catch (error) {
+      throw new ServerError('Failed to get tournament pairings', error)
     }
   },
 }

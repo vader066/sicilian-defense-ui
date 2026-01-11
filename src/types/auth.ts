@@ -43,3 +43,15 @@ export class AuthError extends Error {
     this.originalError = originalError
   }
 }
+
+export class ServerError extends Error {
+  status: number
+
+  constructor(message: string, originalError: any) {
+    super(
+      originalError.response?.data?.message || originalError.message || message,
+    )
+    this.name = 'ServerError'
+    this.status = originalError.response?.status || 500
+  }
+}

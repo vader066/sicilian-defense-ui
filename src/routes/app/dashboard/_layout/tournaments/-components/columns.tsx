@@ -87,7 +87,7 @@ export const tournamentColumns: ColumnDef<DBTourney>[] = [
   //     const id = row.getValue() as string
   //     return (
   //       <div className="font-medium w-full justify-center flex text-slate-600">
-  //         <Button variant="link" href={`/app/dashboard/history/${id}`}>
+  //         <Button variant="link" href={`/app/dashboard/tournaments/${id}`}>
   //           View
   //         </Button>
   //       </div>
