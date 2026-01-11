@@ -42,3 +42,23 @@ export type syncTournReq = {
     newRating: number
   }>
 }
+
+export type createRoundRobinTournamentReq = {
+  playerIDs: string[]
+  tournamentName: string
+}
+
+export interface TOURNAMENT_PAIRINGS {
+  id: string
+  tournament_id: string
+  white?: string
+  black?: string
+  bye?: string
+  round: number
+  created_at: string
+}
+
+export type createRoundRobinTournamentRes = {
+  tournament: DBTourney
+  pairings: TOURNAMENT_PAIRINGS[]
+}
