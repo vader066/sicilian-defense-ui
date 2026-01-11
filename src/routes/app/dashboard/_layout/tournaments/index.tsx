@@ -11,10 +11,10 @@ import { useTournaments } from '@/hooks/tournaments'
 import type { DBTourney } from '@/types/tournament'
 
 export const Route = createFileRoute('/app/dashboard/_layout/tournaments/')({
-  component: History,
+  component: TournamentPage,
 })
 
-function History() {
+function TournamentPage() {
   const { user } = Route.useRouteContext()
   const [selectedTourn, setSelectedTourn] = useState<DBTourney | null>(null)
 

@@ -1,6 +1,7 @@
 import type { PLAYER } from '@/types/players'
 import api from '../api-client'
 import type { ApiResponse } from '../types'
+import { ServerError } from '@/types/auth'
 
 export function getPlayerName(
   playerId: string,
@@ -41,7 +42,7 @@ export const playerService = {
       )
       return response.data.data
     } catch (error) {
-      throw error
+      throw new ServerError('Failed to add player', error)
     }
   },
 
