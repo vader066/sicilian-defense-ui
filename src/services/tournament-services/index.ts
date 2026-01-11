@@ -5,6 +5,7 @@ import type {
   tournamentReq,
   createRoundRobinTournamentReq,
   createRoundRobinTournamentRes,
+  Round,
 } from '@/types/tournament'
 import api from '../api-client'
 import type { ApiResponse } from '../types'
@@ -107,13 +108,25 @@ export const tournamentServices = {
     data: createRoundRobinTournamentReq,
   ): Promise<createRoundRobinTournamentRes> {
     try {
-      const response = await api.post<ApiResponse<createRoundRobinTournamentRes>>(
-        `/tournaments/round-robin/create`,
-        data,
-      )
+      const response = await api.post<
+        ApiResponse<createRoundRobinTournamentRes>
+      >(`/tournaments/round-robin/create`, data)
       return response.data.data
     } catch (error) {
       throw new ServerError('Failed to create round robin tournament', error)
+    }
+  },
+
+  async getTournamentPairings(
+    tournamentId: string,
+  ): Promise<{ rounds: Round[] }> {
+    try {
+      const response = await api.get<ApiResponse<{ rounds: Round[] }>>(
+        `/tournaments/${tournamentId}/pairings`,
+      )
+      return response.data.data
+    } catch (error) {
+      throw new ServerError('Failed to get tournament pairings', error)
     }
   },
 }

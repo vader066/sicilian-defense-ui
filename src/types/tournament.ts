@@ -62,3 +62,14 @@ export type createRoundRobinTournamentRes = {
   tournament: DBTourney
   pairings: TOURNAMENT_PAIRINGS[]
 }
+
+export type Pair = {
+  white?: string
+  black?: string
+  bye?: string
+}
+
+export type Round = {
+  round: number
+  pairings: Pair[]
+}

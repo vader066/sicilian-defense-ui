@@ -112,3 +112,11 @@ export function useCreateRoundRobinTournament(clubId: string) {
     },
   })
 }
+
+export function useGetTournamentPairings(tournamentId: string) {
+  return useQuery({
+    queryKey: ['tournamentPairings', tournamentId],
+    queryFn: () => tournamentServices.getTournamentPairings(tournamentId),
+    enabled: !!tournamentId,
+  })
+}
