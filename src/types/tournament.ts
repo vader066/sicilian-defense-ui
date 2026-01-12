@@ -73,3 +73,36 @@ export type Round = {
   round: number
   pairings: Pair[]
 }
+
+export interface ARENATOURNAMENTGAME {
+	id: string;
+	rated: boolean;
+	variant: string;
+	speed: string;
+	perf: string;
+	createdAt: number;
+	lastMoveAt: number;
+	status: string;
+	source: string;
+	players: {
+		white: LICHESSPLAYER;
+		black: LICHESSPLAYER;
+	};
+	winner: "white" | "black";
+	moves: string;
+	tournament: string;
+	clock: {
+		initial: number;
+		increment: number;
+		totalTime: number;
+	};
+}
+
+export interface LICHESSPLAYER {
+	user: {
+		name: string;
+		id: string;
+	};
+	rating: number;
+	ratingDiff: number;
+}

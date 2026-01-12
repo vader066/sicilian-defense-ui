@@ -46,6 +46,18 @@ export const playerService = {
     }
   },
 
+  async addPlayers(playerArray: Partial<PLAYER[]>): Promise<PLAYER[]> {
+    try {
+      const response = await api.post<ApiResponse<PLAYER[]>>(
+        '/players/populate',
+        playerArray,
+      )
+      return response.data.data
+    } catch (error) {
+      throw new ServerError('Failed to add players', error)
+    }
+  },
+
   async updatePlayer(
     playerId: string,
     playerData: Partial<PLAYER>,

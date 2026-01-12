@@ -23,6 +23,14 @@ export function useGetTournament(tournamentId: string) {
   })
 }
 
+export function useGetLichessTournament(tournamentId: string) {
+  return useQuery({
+    queryKey: ['tournament', tournamentId],
+    queryFn: () => tournamentServices.getLichessTournament(tournamentId),
+    enabled: !!tournamentId,
+  })
+}
+
 export function useAddTournament(clubId: string) {
   const queryClient = useQueryClient()
 

@@ -1,9 +1,9 @@
 import { Badge } from '@/components/ui/badge'
 import { Calendar, LucideNotebookPen, UsersIcon } from 'lucide-react'
 import DataTable from '@/components/data-table'
-import type { TOURNAMENT } from '@/types/database/models'
 import { GetTourneyPlayers } from '@/services/tournament-services'
 import { Button } from '@/components/ui/button'
+import type { TOURNAMENT } from '@/types/tournament'
 
 export function TournamentTable({
   tournament,
@@ -29,7 +29,7 @@ export function TournamentTable({
         return (
           <div className="w-full py-6 px-6 flex gap-3 flex-col bg-gradient-to-r from-slate-800 to-slate-700 text-white rounded-t-lg">
             <div className="w-full flex items-center justify-between">
-              <h1 className="font-bold text-2xl">{tournament.tournamentId}</h1>
+              <h1 className="font-bold text-2xl">{tournament.tournamentName}</h1>
               <Button
                 disabled={isCreating}
                 type="button"

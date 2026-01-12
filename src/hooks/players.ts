@@ -37,6 +37,32 @@ export function useAddPlayer(clubId: string) {
   })
 }
 
+export function useAddPlayers(clubId: string) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (players: Partial<PLAYER[]>) =>
+      playerService.addPlayers(players),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['players', clubId] })
+      toast({
+        title: 'Player Creation',
+        description: 'The players have been successfully added.',
+        variant: 'success',
+      })
+    },
+    onError: (error) => {
+      toast({
+        title: 'Player Creation',
+        description:
+          error instanceof Error
+            ? error.message
+            : 'Player creation failed. Please try again.',
+        variant: 'error',
+      })
+    },
+  })
+}
+
 export function useUpdatePlayer(clubId: string) {
   const queryClient = useQueryClient()
   return useMutation({

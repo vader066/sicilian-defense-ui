@@ -6,6 +6,7 @@ import type {
   createRoundRobinTournamentReq,
   createRoundRobinTournamentRes,
   Round,
+  ARENATOURNAMENTGAME,
 } from '@/types/tournament'
 import api from '../api-client'
 import type { ApiResponse } from '../types'
@@ -64,6 +65,18 @@ export const tournamentServices = {
     }
   },
 
+  async getLichessTournament(tournamentId: string): Promise<ARENATOURNAMENTGAME[]> {
+    try {
+      const response = await api.get<ApiResponse<ARENATOURNAMENTGAME[]>>(
+        `/tournaments/lichess/arena/${tournamentId}`
+      )
+      return response.data.data
+    } catch (error) {
+        throw new ServerError('Failed to fetch lichess tournament', error)
+
+    }
+  },
+
   async addTournament(tournamentData: tournamentReq): Promise<{
     tournament_id: string
     games_added: number
@@ -89,7 +102,7 @@ export const tournamentServices = {
       )
       return response.data.data
     } catch (error) {
-      throw error
+        throw new ServerError('Failed to fetch lichess tournament', error)
     }
   },
 
