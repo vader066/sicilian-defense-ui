@@ -1,13 +1,17 @@
 import { toast } from '@/components/toast'
+import { AuthService } from '@/services/auth'
 import { playerService } from '@/services/player-services'
 import type { PLAYER } from '@/types/players'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
-export function usePlayers(clubId: string) {
+const localStorageClubID = AuthService.getUserData().user.club_id
+
+export function usePlayers(clubId?: string) {
+  // don't need this argument anymore since we get clubId from localStorage but too lazy to change all calls
   return useQuery({
-    queryKey: ['players', clubId],
-    queryFn: () => playerService.getPlayers(clubId),
-    enabled: !!clubId,
+    queryKey: ['players', localStorageClubID],
+    queryFn: () => playerService.getPlayers(localStorageClubID),
+    enabled: true,
   })
 }
 

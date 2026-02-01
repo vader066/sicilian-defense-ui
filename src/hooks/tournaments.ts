@@ -82,7 +82,8 @@ export function useGetLichessArenaTournament(tournamentId: string) {
   return useQuery({
     queryKey: ['lichessArenaTournament', tournamentId],
     queryFn: () => tournamentServices.getLichessArenaTournament(tournamentId),
-    enabled: !!tournamentId,
+    enabled: false,
+    retry: false,
   })
 }
 

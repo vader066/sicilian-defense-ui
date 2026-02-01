@@ -22,6 +22,17 @@ export function getPlayer(playerId: string, players: PLAYER[]): PLAYER | null {
   return null
 }
 
+export function getPlayerByUsername(
+  username: string,
+  players: PLAYER[],
+): PLAYER | null {
+  const player = players.find((player) => username === player.username)
+  if (player) {
+    return player
+  }
+  return null
+}
+
 export const playerService = {
   async getPlayers(clubId: string): Promise<PLAYER[]> {
     try {

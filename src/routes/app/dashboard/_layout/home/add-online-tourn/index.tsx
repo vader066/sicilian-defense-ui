@@ -1,7 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { RecordNewTournament } from '@/services/lichess/record-tournament'
-import { type TOURNAMENT } from '@/types/database/models'
-import React, { useState } from 'react'
+import { TransformLichessTournament } from '@/services/lichess/record-tournament'
+import React, { useEffect, useState } from 'react'
 import { localFetch } from '@/services/fetch'
 import { toast } from '@/components/toast'
 import { Search, Trophy } from 'lucide-react'
@@ -9,6 +8,8 @@ import { Button } from '@/components/ui/button'
 import { TournamentTable } from './-components/tournament-table'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
+import { useGetLichessArenaTournament } from '@/hooks/tournaments'
+import type { TOURNAMENT } from '@/types/tournament'
 
 export const Route = createFileRoute(
   '/app/dashboard/_layout/home/add-online-tourn/',
@@ -17,15 +18,31 @@ export const Route = createFileRoute(
 })
 
 function Page() {
-  const [isFetching, setIsFetching] = useState(false)
   const [isCreating, setIsCreating] = useState(false)
   const [tournamentId, setTournamentId] = useState('')
   const [data, setData] = useState<TOURNAMENT | undefined>(undefined)
+  const {
+    data: lichessArenaTournament,
+    refetch,
+    isFetching,
+  } = useGetLichessArenaTournament(tournamentId)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault()
     setTournamentId(e.target.value)
   }
+
+  useEffect(() => {
+    console.log('tournament available')
+
+    if (lichessArenaTournament && lichessArenaTournament.length > 0) {
+      const tournament = TransformLichessTournament(
+        lichessArenaTournament,
+        tournamentId,
+      )
+      setData(tournament)
+    }
+  }, [lichessArenaTournament])
 
   const handleAddTournamentToDB = async (e: any) => {
     e.preventDefault()
@@ -58,18 +75,9 @@ function Page() {
   }
 
   // can't use async with React.ChangeEvent<HTMLInputElement>
-  const handleFetchTournament = async (e: any) => {
+  const handleFetchTournament = (e: any) => {
     e.preventDefault()
-    setIsFetching(true)
-    try {
-      const tournament = await RecordNewTournament(tournamentId)
-      setData(tournament)
-      console.log(tournament)
-    } catch (error) {
-      console.log(error)
-    } finally {
-      setIsFetching(false)
-    }
+    refetch()
   }
   return (
     <div className="min-h-screen">
@@ -110,7 +118,7 @@ function Page() {
               />
               <Button
                 onClick={handleFetchTournament}
-                disabled={isFetching}
+                disabled={isFetching || tournamentId.trim() === ''}
                 className="px-6"
               >
                 {isFetching ? (
@@ -123,19 +131,15 @@ function Page() {
                 )}
               </Button>
             </div>
-            {/* {error && (
-              <p className="text-red-600 text-sm bg-red-50 p-3 rounded-lg border border-red-200">
-                {error}
-              </p>
-            )} */}
           </div>
         </div>
 
         {/* Tournament Results */}
 
-        {data && (
+        {lichessArenaTournament && (
           <TournamentTable
-            tournament={data}
+            lichessArenaTournament={lichessArenaTournament}
+            tournamentName={tournamentId}
             isCreating={isCreating}
             action={handleAddTournamentToDB}
           />
@@ -159,7 +163,7 @@ function Page() {
         )}
 
         {/* Help Text */}
-        {!data && !isFetching && (
+        {!lichessArenaTournament && !isFetching && (
           <div className="rounded-md max-w-2xl mx-auto bg-blue-50 border-blue-200 border">
             <div className="p-6 text-center">
               <p className="text-blue-800 font-medium mb-2">
@@ -188,37 +192,3 @@ function Page() {
     </div>
   )
 }
-
-// <div>
-//   <form
-//     onSubmit={handleSubmit}
-//     className="w-full h-dvh flex flex-col items-center justify-center gap-5"
-//   >
-//     <input
-//       type="text"
-//       value={tournamentId}
-//       onChange={handleChange}
-//       id=""
-//       placeholder="Tournament ID"
-//       className="p-2 focus:outline-none focus:border-gray-400 border border-gray-600 rounded-md"
-//     />
-//     <button
-//       type="submit"
-//       disabled={isFetching}
-//       className={`px-6 py-2 bg-black text-white rounded-md ${
-//         isFetching ? 'opacity-70' : ''
-//       }`}
-//     >
-//       {isFetching ? <Spinner /> : 'Fetch Lichess Tournament'}
-//     </button>
-//     <button
-//       onClick={handleClick}
-//       disabled={isCreating}
-//       className={`px-6 py-2 bg-black text-white rounded-md ${
-//         isCreating ? 'opacity-70' : ''
-//       }`}
-//     >
-//       {isCreating ? <Spinner /> : 'Add To db'}
-//     </button>
-//   </form>
-// </div>

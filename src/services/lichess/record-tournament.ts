@@ -1,50 +1,45 @@
 import { type ARENATOURNAMENTGAME } from '@/types/lichess/game'
-import { localFetch } from '../fetch'
-import type { TOURNAMENT } from '@/types/database/models'
 import type { GAME } from '@/types/games'
+import type { TOURNAMENT } from '@/types/tournament'
 
 // 1. fetch a tournament data from our api which fetches the tournament from lichess api
-export async function RecordNewTournament(tournamentId: string) {
-  //fetch lichess tournament data through our api
-  try {
-    const response = await localFetch<ARENATOURNAMENTGAME[]>(
-      `/lichess-tournament/${tournamentId}`,
-    )
-    const lichessTournamentGames = response.data
-    console.log('Games successfully fetched')
-
-    //Create tournament game objects according to db schema
-    const tournamentGames = CreateTournamentGames(
-      lichessTournamentGames,
-      // tournamentId,
-    )
-    //create tournament object according to db schema
-    const tournament: TOURNAMENT = {
-      tournamentId: tournamentId,
-      games: tournamentGames,
-      players: getPlayers(lichessTournamentGames),
-    }
-
-    return tournament
-  } catch (error) {
-    console.error(error)
+export function TransformLichessTournament(
+  lichessTournament: ARENATOURNAMENTGAME[],
+  tournamentName: string,
+) {
+  //Create tournament game objects according to db schema
+  const tournamentGames = TransformLichessGames(lichessTournament)
+  //create tournament object according to db schema
+  const tournament: TOURNAMENT = {
+    tournamentName,
+    id: '', // to be filled by database
+    numberOfRounds: 1, // Arena tournaments don't have rounds
+    numberOfGames: tournamentGames.length,
+    games: tournamentGames,
+    status: 'completed',
+    beganAt: new Date(),
+    clubId: '', // to be filled at the time of adding to db
+    playerIDs: getPlayers(lichessTournament), // these are actually their usernames on lichess
   }
+
+  return tournament
 }
 
 //create tournament game objects according to our appwrite database structure
-function CreateTournamentGames(
+function TransformLichessGames(
   tournamentGames: Array<ARENATOURNAMENTGAME>,
-  // tournamentId: string,
-) {
-  // need to update this to include draws and forfeits but lichess api doesn't seem to provide draw/forfeit info - investigate
+): Array<GAME> {
+  // no draw/forfeit for arena tournament games
   const tournament = tournamentGames.map((game) => {
     let newgame: GAME = {
-      // tournamentId: tournamentId,
+      round: 1,
       game_id: game.id,
-      black: game.players.black.user.id,
-      white: game.players.white.user.id,
-      winner: getWinner(game),
-      played_at: new Date().toISOString(),
+      black: game.players.black.user.id, //username
+      white: game.players.white.user.id, //username
+      black_rating: game.players.black.ratingDiff,
+      white_rating: game.players.white.ratingDiff,
+      winner: getWinner(game), //username
+      played_at: game.createdAt.toString(),
       draw: false,
     }
     return newgame
@@ -53,7 +48,7 @@ function CreateTournamentGames(
   return tournament
 }
 
-function getWinner(game: ARENATOURNAMENTGAME) {
+function getWinner(game: ARENATOURNAMENTGAME): string {
   if (game.winner === 'white') {
     return game.players.white.user.id
   } else {
