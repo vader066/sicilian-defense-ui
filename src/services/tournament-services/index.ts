@@ -11,6 +11,7 @@ import api from '../api-client'
 import type { ApiResponse } from '../types'
 import type { GAME } from '@/types/games'
 import { ServerError } from '@/types/auth'
+import type { ARENATOURNAMENTGAME } from '@/types/lichess/game'
 
 // Creates an array of player ID's of all players that played in a tournament
 export function GetTourneyPlayers(games: GAME[]): Array<string> {
@@ -93,12 +94,14 @@ export const tournamentServices = {
     }
   },
 
-  async getLichessArenaTournament(tournamentId: string): Promise<any> {
+  async getLichessArenaTournament(
+    tournamentId: string,
+  ): Promise<ARENATOURNAMENTGAME[]> {
     try {
-      const response = await api.get<any>(
+      const response = await api.get<ApiResponse<ARENATOURNAMENTGAME[]>>(
         `/tournaments/lichess/arena/${tournamentId}`,
       )
-      return response.data
+      return response.data.data
     } catch (error) {
       throw error
     }
