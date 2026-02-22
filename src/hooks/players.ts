@@ -74,3 +74,28 @@ export function useUpdatePlayer(clubId: string) {
     },
   })
 }
+
+export function usePlayersFileUpload() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (file: File) => playerService.uploadPlayersFile(file),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['players'] })
+      toast({
+        title: 'File Upload',
+        description: `Successfully uploaded ${data.length} player${data.length !== 1 ? 's' : ''}.`,
+        variant: 'success',
+      })
+    },
+    onError: (error) => {
+      toast({
+        title: 'File Upload',
+        description:
+          error instanceof Error
+            ? error.message
+            : 'File upload failed. Please try again.',
+        variant: 'error',
+      })
+    },
+  })
+}

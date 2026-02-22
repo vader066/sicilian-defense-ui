@@ -71,4 +71,23 @@ export const playerService = {
       throw error
     }
   },
+
+  async uploadPlayersFile(file: File): Promise<PLAYER[]> {
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+      const response = await api.post<ApiResponse<PLAYER[]>>(
+        '/players/upload',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        },
+      )
+      return response.data.data
+    } catch (error) {
+      throw new ServerError('Failed to upload players file', error)
+    }
+  },
 }
