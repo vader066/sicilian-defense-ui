@@ -6,7 +6,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 const localStorageClubID = AuthService.getUserData().user.club_id
 
-export function usePlayers(clubId?: string) {
+export function usePlayers() {
   // don't need this argument anymore since we get clubId from localStorage but too lazy to change all calls
   return useQuery({
     queryKey: ['players', localStorageClubID],

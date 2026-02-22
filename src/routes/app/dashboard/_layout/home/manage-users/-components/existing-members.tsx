@@ -33,7 +33,7 @@ export function ExistingMember({ clubId }: { clubId: string }) {
   //   }
   // }
 
-  const { data: players, isPending: playersLoading, error } = usePlayers(clubId)
+  const { data: players, isPending: playersLoading, error } = usePlayers()
   return (
     <div className="w-full p-3 flex flex-col gap-5 text-center">
       {!error ? (

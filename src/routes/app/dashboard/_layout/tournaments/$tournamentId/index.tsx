@@ -13,7 +13,6 @@ export const Route = createFileRoute(
 })
 
 function TournamentDetailPage() {
-  const { user } = Route.useRouteContext()
   const navigate = useNavigate()
   const { tournamentId } = Route.useParams()
 
@@ -27,7 +26,7 @@ function TournamentDetailPage() {
     data: players,
     isPending: playersPending,
     error: playersError,
-  } = usePlayers(user.club_id)
+  } = usePlayers()
 
   const {
     data: pairingsData,

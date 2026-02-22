@@ -19,7 +19,7 @@ function CreateRoundRobinTournament() {
   const [tournamentName, setTournamentName] = useState('')
   const [selectedPlayers, setSelectedPlayers] = useState<PLAYER[]>([])
 
-  const { data: players, isLoading, error } = usePlayers(user.club_id)
+  const { data: players, isLoading, error } = usePlayers()
   const { mutate: createTournament, isPending } = useCreateRoundRobinTournament(
     user.club_id,
   )

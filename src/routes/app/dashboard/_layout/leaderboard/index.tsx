@@ -9,8 +9,7 @@ export const Route = createFileRoute('/app/dashboard/_layout/leaderboard/')({
 })
 
 function Leaderboard() {
-  const { user } = Route.useRouteContext()
-  const { data: players, isPending, error } = usePlayers(user.club_id)
+  const { data: players, isPending, error } = usePlayers()
   return (
     <div className="w-full p-3 flex flex-col gap-5 text-center">
       <p className="text-xl font-bold">Leaderboard</p>
