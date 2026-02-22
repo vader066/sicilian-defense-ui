@@ -40,11 +40,7 @@ export type GameResultEntry = {
 function DynamicForm() {
   //hooks
   const { user } = Route.useRouteContext()
-  const {
-    data: players,
-    isPending: isLoading,
-    error,
-  } = usePlayers(user.club_id)
+  const { data: players, isPending: isLoading, error } = usePlayers()
   const { mutate: addTournament, isPending: isSaving } = useAddTournament(
     user.club_id,
   )
