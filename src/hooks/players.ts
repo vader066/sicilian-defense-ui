@@ -7,21 +7,20 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 const localStorageClubID = AuthService.getUserData().user.club_id
 
 export function usePlayers() {
-  // don't need this argument anymore since we get clubId from localStorage but too lazy to change all calls
   return useQuery({
-    queryKey: ['players', localStorageClubID],
+    queryKey: ['players'],
     queryFn: () => playerService.getPlayers(localStorageClubID),
     enabled: true,
   })
 }
 
-export function useAddPlayer(clubId: string) {
+export function useAddPlayer() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (playerData: Partial<PLAYER>) =>
       playerService.addPlayer(playerData),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['players', clubId] })
+      queryClient.invalidateQueries({ queryKey: ['players'] })
       toast({
         title: 'Player Creation',
         description: 'The player has been successfully added.',
@@ -41,7 +40,7 @@ export function useAddPlayer(clubId: string) {
   })
 }
 
-export function useUpdatePlayer(clubId: string) {
+export function useUpdatePlayer() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: ({
@@ -54,7 +53,7 @@ export function useUpdatePlayer(clubId: string) {
       return playerService.updatePlayer(playerId, playerData)
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['players', clubId] })
+      queryClient.invalidateQueries({ queryKey: ['players'] })
       queryClient.clear()
       toast({
         title: 'Player Update',
