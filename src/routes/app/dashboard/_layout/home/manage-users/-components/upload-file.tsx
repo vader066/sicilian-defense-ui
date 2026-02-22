@@ -17,7 +17,7 @@ const REQUIRED_COLUMNS = [
   { key: 'programme', description: 'Programme or course of study' },
   { key: 'rating', description: 'Player rating (numeric)' },
   { key: 'username', description: 'Lichess username' },
-  { key: 'date_of_birth', description: 'Date of birth (e.g. MM/DD/YYYY)' },
+  { key: 'date_of_birth', description: 'Date of birth (e.g. DD/MM/YYYY)' },
   { key: 'sex', description: 'MALE or FEMALE' },
 ]
 
