@@ -1,11 +1,6 @@
+import { DatePicker } from '@/components/date-picker'
 import { Button } from '@/components/ui/button'
-import { Calendar } from '@/components/ui/calendar'
 import { DialogClose, DialogFooter } from '@/components/ui/dialog'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
 import {
   Select,
   SelectContent,
@@ -17,9 +12,7 @@ import { Spinner } from '@/components/ui/spinner'
 import { useAddPlayer, useUpdatePlayer } from '@/hooks/players'
 import { cn } from '@/lib/utils'
 import type { PLAYER } from '@/types/players'
-import { format } from 'date-fns'
-import { CalendarIcon } from 'lucide-react'
-import { type FormEvent, useEffect, useState } from 'react'
+import { type FormEvent, useState } from 'react'
 import { FaChessKing, FaChessQueen } from 'react-icons/fa'
 
 export function AddMember({
@@ -29,31 +22,25 @@ export function AddMember({
   player?: PLAYER
   clubId: string
 }) {
-  const [edit, setEdit] = useState(false)
-  const [form, setForm] = useState<PLAYER>({
-    id: '',
-    first_name: '',
-    last_name: '',
-    programme: '',
-    username: '',
-    date_of_birth: new Date().toLocaleDateString(),
-    rating: 1400,
-    sex: 'FEMALE',
-    club_id: clubId,
-  })
+  // This component is also used to edit an existing member's info when a player object is passed
   const { mutate: updatePlayer, isPending: isUpdating } =
     useUpdatePlayer(clubId)
   const { mutate: addPlayer, isPending: isAdding } = useAddPlayer(clubId)
-
-  // This component is also used to edit an existing member's info when a player object is passed
-  useEffect(() => {
-    if (player) {
-      setForm({
-        ...player,
-        date_of_birth: form.date_of_birth,
-      })
-    }
-  }, [])
+  const [form, setForm] = useState<PLAYER>(
+    player || {
+      id: '',
+      first_name: '',
+      last_name: '',
+      programme: '',
+      username: '',
+      date_of_birth: new Date().toLocaleDateString(),
+      rating: 1400,
+      sex: 'FEMALE',
+      club_id: clubId,
+    },
+  )
+  const [dob, setDob] = useState<Date | undefined>(new Date(form.date_of_birth))
+  const [edit, setEdit] = useState(false)
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -64,15 +51,18 @@ export function AddMember({
         last_name: form.last_name,
         programme: form.programme,
         username: form.username,
-        date_of_birth: form.date_of_birth,
+        date_of_birth: dob ? dob.toLocaleDateString() : '',
         rating: form.rating,
         sex: form.sex,
         club_id: player.club_id,
       }
-      // console.log(playerData)
       updatePlayer({ playerId: player.id, playerData })
     } else {
-      addPlayer(form)
+      addPlayer({
+        ...form,
+        rating: Number(form.rating),
+        date_of_birth: dob ? dob.toLocaleDateString() : '',
+      })
     }
   }
 
@@ -176,38 +166,7 @@ export function AddMember({
         </div>
         <div className="flex w-full flex-col gap-2">
           <label htmlFor="dob">Date of Birth</label>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant={'outline'}
-                className={cn(
-                  'w-full pl-3 h-11 text-left font-normal',
-                  !form.date_of_birth && 'text-muted-foreground',
-                )}
-              >
-                {form.date_of_birth ? (
-                  format(form.date_of_birth, 'PPP')
-                ) : (
-                  <span>Pick a date</span>
-                )}
-                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-              <Calendar
-                mode="single"
-                selected={new Date(form.date_of_birth)}
-                onSelect={(e) => {
-                  const date = format(e!, 'PPP')
-                  setForm({ ...form, date_of_birth: date })
-                }}
-                disabled={(date) =>
-                  date > new Date() || date < new Date('1900-01-01')
-                }
-                initialFocus
-              />
-            </PopoverContent>
-          </Popover>
+          <DatePicker date={dob} setDate={setDob} className="w-32 h-11" />
         </div>
         <div className="flex w-full flex-col gap-3 items-center">
           <p className="text-black/50 text-xs text-center w-[50%] italic">

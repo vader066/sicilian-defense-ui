@@ -7,7 +7,7 @@ import { EditPlayerInfo } from './update-dialog'
 import { usePlayers } from '@/hooks/players'
 
 export function ExistingMember({ clubId }: { clubId: string }) {
-  // replace disable with deactivate later
+  // replace delete with deactivate later
   // const [deletingUsername, setDeletingUsername] = useState<string | null>(null) // Track the username of the row being deleted
   // const deletePlayer = async (username: string) => {
   //   try {
