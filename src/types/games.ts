@@ -4,8 +4,8 @@ export interface GAME {
   white: string //White Player ID
   round: number
   winner?: string
-  black_rating?: number // shouldn't be optional will change later
-  white_rating?: number // shouldn't be optional will change later
+  black_rating?: number
+  white_rating?: number
   played_at: string
   tournament_id?: string // optional because backend handles this during tournament with games creation
   draw: boolean

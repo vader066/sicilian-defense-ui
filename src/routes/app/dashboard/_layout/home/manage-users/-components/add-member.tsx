@@ -23,9 +23,8 @@ export function AddMember({
   clubId: string
 }) {
   // This component is also used to edit an existing member's info when a player object is passed
-  const { mutate: updatePlayer, isPending: isUpdating } =
-    useUpdatePlayer(clubId)
-  const { mutate: addPlayer, isPending: isAdding } = useAddPlayer(clubId)
+  const { mutate: updatePlayer, isPending: isUpdating } = useUpdatePlayer()
+  const { mutate: addPlayer, isPending: isAdding } = useAddPlayer()
   const [form, setForm] = useState<PLAYER>(
     player || {
       id: '',
