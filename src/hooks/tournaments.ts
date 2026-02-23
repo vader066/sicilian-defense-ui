@@ -23,13 +23,14 @@ export function useGetTournament(tournamentId: string) {
   })
 }
 
-export function useAddTournament(clubId: string) {
+export function useAddTournament() {
   const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: (t: tournamentReq) => tournamentServices.addTournament(t),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['tournaments', clubId] })
+      queryClient.invalidateQueries({ queryKey: ['tournaments'] })
+      queryClient.invalidateQueries({ queryKey: ['players'] })
       toast({
         title: 'Tournament Created',
         description: 'The tournament has been successfully added.',

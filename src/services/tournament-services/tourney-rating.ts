@@ -31,14 +31,12 @@ export function ratingPointsEval({
 
   tourneyGames.forEach((game) => {
     // updating games rating fields with entry ratings of both players
-    // game.black_rating = localTourneyPlayers.find(
-    //   (player) => player?.playerId === game.black,
-    // )?.newRating
-    // game.white_rating = localTourneyPlayers.find(
-    //   (player) => player?.playerId === game.white,
-    // )?.newRating
-
-    // this is now done when entering/creating the games in the form. After testing, remove this
+    game.black_rating = localTourneyPlayers.find(
+      (player) => player?.playerId === game.black,
+    )?.newRating
+    game.white_rating = localTourneyPlayers.find(
+      (player) => player?.playerId === game.white,
+    )?.newRating
 
     // calculating rating points for players
     const blackRatingPoints = parseFloat(blackPoints(game).toFixed(2))

@@ -308,11 +308,8 @@ const RoundCard = React.memo(function RoundCard({
 // ---------------------------------------------------------------------------
 
 function DynamicForm() {
-  const { user } = Route.useRouteContext()
   const { data: players, isPending: isLoading, error } = usePlayers()
-  const { mutate: addTournament, isPending: isSaving } = useAddTournament(
-    user.club_id,
-  )
+  const { mutate: addTournament, isPending: isSaving } = useAddTournament()
 
   const [rounds, setRounds] = useState<RoundSection[]>([])
   const tournamentNameRef = useRef<HTMLInputElement>(null)
